@@ -1,21 +1,68 @@
+/* 全局样式重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background: transparent !important;
+  overflow: hidden;
+}
+
+/* root 样式 */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* 预设浅色模式 */
-.app-container.light {
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2); /* 浅色背景 */
-  color: #333;
+/* 主容器 */
+.app {
+  min-width: 800px;
+  min-height: 600px;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+  /* 可拖拽 */
+  app-region: drag;
+  user-select: none;
 }
 
-/* 预设深色模式 */
-.app-container.dark {
-  background: linear-gradient(135deg, #2c3e50, #4ca1af); /* 深色背景 */
-  color: #eee;
+button {
+  /* 按钮不可拖拽 */
+  app-region: no-drag;
 }
 
-@media (prefers-reduced-motion: no-preference) {
+:root {
+  --bg-light: #f0f0f0;
+  --bg-dark: #1c1c1c;
+}
+
+.app.light {
+  background: var(--bg-light);
+}
+
+.app.dark {
+  background: var(--bg-dark);
+}
+
+/* 深色模式 */
+@media (prefers-color-scheme: dark) {
+  .app {
+    background: var(--bg-dark);
+  }
 }

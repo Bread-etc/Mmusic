@@ -1,7 +1,7 @@
 function MainContent () {
     return (
         <>
-                
+            主内容
         </>
     )
 }

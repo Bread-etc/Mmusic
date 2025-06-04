@@ -9,6 +9,7 @@ import WindowControls from "./TopBar/WindowControls";
 function TopBar() {
   return (
         <div className="top-bar">
+            顶部栏
             <MenuIcon />
             <SearchBar />
             <WindowControls />
