@@ -2,14 +2,10 @@ import "./App.css";
 import TopBar from "./components/TopBar";
 import MainContent from "./components/MainContent";
 import Dock from "./components/Dock";
-import { useState } from "react";
 
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-
   return (
-    <div className={`app ${isDarkMode ? "dark" : "light"}`}>
+    <div className="bg-white app flex-center flex-col">
       <TopBar />
       <MainContent />
       <Dock />

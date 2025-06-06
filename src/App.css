@@ -5,64 +5,69 @@
   box-sizing: border-box;
 }
 
-html,
-body {
-  width: 100%;
-  height: 100%;
-  background: transparent !important;
-  overflow: hidden;
+@font-face {
+  font-family: "Noto Sans SC";
+  src: local("Noto Sans SC"),
+    url("/public/fonts/NotoSansSC-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
-/* root 样式 */
+@font-face {
+  font-family: "Noto Sans SC";
+  src: local("Noto Sans SC"),
+    url("/public/fonts/NotoSansSC-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Noto Sans SC";
+  src: local("Noto Sans SC"),
+    url("/public/fonts/NotoSansSC-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 变量 */
+:root {
+  --font-family: "Noto Sans SC", Arial, Helvetica, system-ui, -apple-system,
+    sans-serif;
+}
+
+html,
+body,
 #root {
   width: 100%;
   height: 100%;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: transparent !important;
+  font-family: var(--font-family);
+  font-weight: 400;
 }
 
-/* 主容器 */
+/* App 组件样式 */
 .app {
+  width: 100%;
+  height: 100%;
   min-width: 800px;
   min-height: 600px;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  box-sizing: border-box;
+  border-radius: 20px;
+  background: transparent;
   overflow: hidden;
-  position: relative;
-  /* 可拖拽 */
+  /* 窗口拖拽 */
+  -webkit-app-region: drag;
   app-region: drag;
   user-select: none;
 }
 
-button {
-  /* 按钮不可拖拽 */
+/* 交互元素不可拖拽 */
+button,
+input,
+a,
+[role="button"] {
+  -webkit-app-region: no-drag;
   app-region: no-drag;
-}
-
-:root {
-  --bg-light: #f0f0f0;
-  --bg-dark: #1c1c1c;
-}
-
-.app.light {
-  background: var(--bg-light);
-}
-
-.app.dark {
-  background: var(--bg-dark);
-}
-
-/* 深色模式 */
-@media (prefers-color-scheme: dark) {
-  .app {
-    background: var(--bg-dark);
-  }
 }

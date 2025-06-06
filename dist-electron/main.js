@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -56,6 +56,12 @@ app.on("activate", () => {
   }
 });
 app.whenReady().then(createWindow);
+ipcMain.on("minimize-window", () => {
+  win == null ? void 0 : win.minimize();
+});
+ipcMain.on("close-window", () => {
+  win == null ? void 0 : win.close();
+});
 export {
   MAIN_DIST,
   RENDERER_DIST,

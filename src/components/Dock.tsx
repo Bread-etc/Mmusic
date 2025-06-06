@@ -3,7 +3,7 @@ import TimeDisplay from "./Dock/TimeDisplay";
 
 function Dock() {
     return (
-        <div className="dock">
+        <div className="h-[15%] flex-between w-full">
             底部栏Dock
             <ProgressBar />
             <TimeDisplay />

@@ -20,5 +20,8 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   },
 
   // You can expose other APTs you need here.
-  // ...
+  // 最小化
+  minimize: () => ipcRenderer.send('minimize'),
+  // 关闭窗口
+  close: () => ipcRenderer.send('close'),
 })
