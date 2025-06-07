@@ -1,11 +1,34 @@
-import { defineConfig } from "unocss";
+import { defineConfig, presetWind3 } from "unocss";
+import { presetShadcn } from "unocss-preset-shadcn";
+import presetAnimations from "unocss-preset-animations";
+
 
 export default defineConfig({
+  presets: [
+    presetWind3(),
+    presetAnimations({
+      durations: {
+        'slow': '3s',
+      },
+      animations: {
+        'spin-slow': {
+          animation: 'spin 3s linear infinite',
+          keyframes: {
+            'from': { transform: 'rotate(0deg)' },
+            'to': { transform: 'rotate(360deg)' }
+          }
+        }
+      }
+    }),
+    presetShadcn({
+      color: 'zinc',
+    }),
+  ],
   shortcuts: {
     // 标题样式
-    "title-h1": "font-bold text-2xl font-noto tracking-wide",
-    "title-h2": "font-medium text-xl font-noto tracking-normal",
-    "title-h3": "font-medium text-lg font-noto",
+    "title-large": "font-bold text-2xl font-noto tracking-wide",
+    "title-middle": "font-medium text-xl font-noto tracking-normal",
+    "title-small": "font-medium text-lg font-noto",
 
     // 正文样式
     "text-body": "font-normal text-base font-noto leading-normal",
@@ -14,7 +37,14 @@ export default defineConfig({
 
     // 常用组合
     "flex-center": "flex items-center justify-center",
+    "flex-between": "flex items-center justify-between",
     "flex-align-center": "flex justify-center items-center flex-col",
+
+    // btn
+    "btn-no-border": "border-none active:border-none hover:border-none focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0 outline-none focus:outline-none active:outline-none !ring-0 !ring-offset-0",
+    
+    // 动画
+    "hover:animate-none": "hover:animation-none",
   },
   rules: [
     ['app-region-drag', {
@@ -29,16 +59,14 @@ export default defineConfig({
   theme: {
     /* 字体 */
     fontFamily: {
-      noto: ["Noto Sans SC", "system-ui", "sans-serif"],
+      noto: "Noto Sans SC, system-ui, sans-serif",
     },
     fontSize: {
-      xs: "12px",
       sm: "14px",
       base: "16px",
       lg: "18px",
       xl: "20px",
-      "2xl": "24px",
-      "3xl": "30px",
+      '2xl': "22px",
     },
     fontWeight: {
       normal: "400",

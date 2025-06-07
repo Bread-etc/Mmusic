@@ -19,9 +19,8 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
     return ipcRenderer.invoke(channel, ...omit)
   },
 
-  // You can expose other APTs you need here.
   // 最小化
-  minimize: () => ipcRenderer.send('minimize'),
+  minimize: () => ipcRenderer.send('minimize-window'),
   // 关闭窗口
-  close: () => ipcRenderer.send('close'),
+  close: () => ipcRenderer.send('close-window'),
 })

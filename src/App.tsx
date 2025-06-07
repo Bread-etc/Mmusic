@@ -5,7 +5,7 @@ import Dock from "./components/Dock";
 
 function App() {
   return (
-    <div className="bg-white app flex-center flex-col">
+    <div className="bg-white text-black dark:text-white dark:bg-black app flex-center flex-col">
       <TopBar />
       <MainContent />
       <Dock />
