@@ -2,26 +2,12 @@ import { defineConfig, presetWind3 } from "unocss";
 import { presetShadcn } from "unocss-preset-shadcn";
 import presetAnimations from "unocss-preset-animations";
 
-
 export default defineConfig({
   presets: [
     presetWind3(),
-    presetAnimations({
-      durations: {
-        'slow': '3s',
-      },
-      animations: {
-        'spin-slow': {
-          animation: 'spin 3s linear infinite',
-          keyframes: {
-            'from': { transform: 'rotate(0deg)' },
-            'to': { transform: 'rotate(360deg)' }
-          }
-        }
-      }
-    }),
+    presetAnimations({}),
     presetShadcn({
-      color: 'zinc',
+      color: "zinc",
     }),
   ],
   shortcuts: {
@@ -41,20 +27,27 @@ export default defineConfig({
     "flex-align-center": "flex justify-center items-center flex-col",
 
     // btn
-    "btn-no-border": "border-none active:border-none hover:border-none focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0 outline-none focus:outline-none active:outline-none !ring-0 !ring-offset-0",
-    
+    "btn-no-border":
+      "border-none active:border-none hover:border-none focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0 outline-none focus:outline-none active:outline-none !ring-0 !ring-offset-0",
+
     // 动画
     "hover:animate-none": "hover:animation-none",
   },
   rules: [
-    ['app-region-drag', {
-      '-webkit-app-region': 'drag',
-      'app-region': 'drag'
-    }],
-    ['app-region-no-drag', {
-      '-webkit-app-region': 'no-drag',
-      'app-region': 'no-drag'
-    }],
+    [
+      "app-region-drag",
+      {
+        "-webkit-app-region": "drag",
+        "app-region": "drag",
+      },
+    ],
+    [
+      "app-region-no-drag",
+      {
+        "-webkit-app-region": "no-drag",
+        "app-region": "no-drag",
+      },
+    ],
   ],
   theme: {
     /* 字体 */
@@ -66,7 +59,7 @@ export default defineConfig({
       base: "16px",
       lg: "18px",
       xl: "20px",
-      '2xl': "22px",
+      "2xl": "22px",
     },
     fontWeight: {
       normal: "400",
