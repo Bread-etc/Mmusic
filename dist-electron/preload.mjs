@@ -20,5 +20,11 @@ electron.contextBridge.exposeInMainWorld("ipcRenderer", {
   // 最小化
   minimize: () => electron.ipcRenderer.send("minimize-window"),
   // 关闭窗口
-  close: () => electron.ipcRenderer.send("close-window")
+  close: () => electron.ipcRenderer.send("close-window"),
+  // Store相关操作
+  getStore: (key) => electron.ipcRenderer.invoke("getStore", key),
+  setStore: (key, value) => electron.ipcRenderer.invoke("setStore", key, value),
+  deleteStore: (key) => electron.ipcRenderer.invoke("deleteStore", key),
+  hasStore: (key) => electron.ipcRenderer.invoke("hasStore", key),
+  clearStore: () => electron.ipcRenderer.invoke("clearStore")
 });

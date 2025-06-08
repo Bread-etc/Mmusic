@@ -3,23 +3,21 @@ import { presetShadcn } from "unocss-preset-shadcn";
 import presetAnimations from "unocss-preset-animations";
 
 export default defineConfig({
-  presets: [
-    presetWind3(),
-    presetAnimations({}),
-    presetShadcn({
-      color: "zinc",
-    }),
-  ],
+  presets: [presetWind3(), presetAnimations({}), presetShadcn()],
   shortcuts: {
     // 标题样式
-    "title-large": "font-bold text-2xl font-noto tracking-wide",
-    "title-middle": "font-medium text-xl font-noto tracking-normal",
-    "title-small": "font-medium text-lg font-noto",
+    "title-large":
+      "font-bold text-2xl font-noto tracking-wide text-black dark:text-white",
+    "title-middle":
+      "font-medium text-xl font-noto tracking-normal text-black dark:text-white",
+    "title-small": "font-medium text-lg font-noto text-black dark:text-white",
 
     // 正文样式
-    "text-body": "font-normal text-base font-noto leading-normal",
-    "text-body-bold": "font-bold text-base font-noto",
-    "text-caption": "font-normal text-sm font-noto leading-snug",
+    "text-body":
+      "font-normal text-base font-noto leading-normal text-black dark:text-white",
+    "text-body-bold":
+      "font-bold font-nototext-base font-noto text-black dark:text-white",
+    "text-caption": "font-normal text-sm font-noto leading-snug text-gray-500",
 
     // 常用组合
     "flex-center": "flex items-center justify-center",
@@ -52,14 +50,14 @@ export default defineConfig({
   theme: {
     /* 字体 */
     fontFamily: {
-      noto: "Noto Sans SC, system-ui, sans-serif",
+      noto: "Noto Sans SC, Arial, Helvetica, system-ui, -apple-system, sans-serif",
     },
     fontSize: {
       sm: "14px",
       base: "16px",
       lg: "18px",
       xl: "20px",
-      "2xl": "22px",
+      "2xl": "24px",
     },
     fontWeight: {
       normal: "400",

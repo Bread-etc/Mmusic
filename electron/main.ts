@@ -1,4 +1,12 @@
-import { app, BrowserWindow, ipcMain, Tray, Menu, dialog, nativeImage } from "electron";
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Tray,
+  Menu,
+  dialog,
+  nativeImage,
+} from "electron";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -33,23 +41,23 @@ function createTray() {
   tray = new Tray(icon);
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: '显示主界面',
-      click: () => win?.show()
+      label: "显示主界面",
+      click: () => win?.show(),
     },
-    { type: 'separator' },
+    { type: "separator" },
     {
-      label: '退出',
+      label: "退出",
       click: () => {
         isQuiting = true;
         app.quit();
-      }
+      },
     },
   ]);
 
-  tray.setToolTip('MMusic');
+  tray.setToolTip("MMusic");
   tray.setContextMenu(contextMenu);
 
-  tray.on('click', () => {
+  tray.on("click", () => {
     win?.show();
   });
 }
@@ -59,11 +67,11 @@ async function handleWindowClose(event: Event) {
   if (!isQuiting) {
     event.preventDefault();
     const result = await dialog.showMessageBox(win!, {
-      type: 'question',
-      buttons: ['最小化到托盘', '直接退出'],
-      title: '关闭确认',
-      message: '确定要关闭程序吗？',
-      detail: '您可以选择最小化到托盘或直接退出程序。',
+      type: "question",
+      buttons: ["最小化到托盘", "直接退出"],
+      title: "关闭确认",
+      message: "确定要关闭程序吗？",
+      detail: "您可以选择最小化到托盘或直接退出程序。",
       cancelId: 0,
     });
 
@@ -101,26 +109,29 @@ function createWindow() {
   });
 
   // 处理窗口关闭事件
-  win.on('close', async (event) => {
+  win.on("close", async (event) => {
     if (!isQuiting) {
       event.preventDefault();
 
-      const closeAction = store.get('closeAction');
+      const closeAction = store.get("closeAction");
       if (closeAction === undefined) {
         // 如果没有保存过偏好，显示对话框
-        const { response, checkboxChecked } = await dialog.showMessageBox(win!, {
-          type: 'question',
-          buttons: ['最小化到托盘', '直接退出'],
-          defaultId: 0,
-          title: '关闭确认',
-          message: '您要直接退出程序还是最小化到系统托盘？',
-          checkboxLabel: '不再询问',
-          checkboxChecked: false,
-        });
+        const { response, checkboxChecked } = await dialog.showMessageBox(
+          win!,
+          {
+            type: "question",
+            buttons: ["最小化到托盘", "直接退出"],
+            defaultId: 0,
+            title: "关闭确认",
+            message: "您要直接退出程序还是最小化到系统托盘？",
+            checkboxLabel: "不再询问",
+            checkboxChecked: false,
+          }
+        );
 
         if (checkboxChecked) {
           // 保存用户选择
-          store.set('closeAction', response === 0 ? 'minimize' : 'quit');
+          store.set("closeAction", response === 0 ? "minimize" : "quit");
         }
 
         if (response === 0) {
@@ -131,7 +142,7 @@ function createWindow() {
         }
       } else {
         // 如果有保存的偏好，直接执行
-        if (closeAction === 'minimize') {
+        if (closeAction === "minimize") {
           win?.hide();
         } else {
           isQuiting = true;
@@ -140,7 +151,6 @@ function createWindow() {
       }
     }
   });
-
 
   // Test active push message to Renderer-process.
   win.webContents.on("did-finish-load", () => {
@@ -178,6 +188,10 @@ app.whenReady().then(() => {
   createTray();
 });
 
+/* ======================================================= */
+/* ipcMain处理函数 */
+/* ======================================================= */
+
 // 监听最小化事件
 ipcMain.on("minimize-window", () => {
   win?.minimize();
@@ -186,6 +200,31 @@ ipcMain.on("minimize-window", () => {
 // 监听关闭事件
 ipcMain.on("close-window", () => {
   if (win) {
-    handleWindowClose(new Event('close'));
+    handleWindowClose(new Event("close"));
   }
+});
+
+// 获取存储值
+ipcMain.handle("getStore", (_event, key) => {
+  return store.get(key);
+});
+
+// 设置存储值
+ipcMain.handle("setStore", (_event, key, value) => {
+  store.set(key, value);
+});
+
+// 删除存储值
+ipcMain.handle("deleteStore", (_event, key) => {
+  store.delete(key);
+});
+
+// 判断存储值是否存在
+ipcMain.handle("hasStore", (_event, key) => {
+  return store.has(key);
+});
+
+// 清空存储
+ipcMain.handle("clearStore", () => {
+  store.clear();
 });

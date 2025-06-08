@@ -23,4 +23,11 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   minimize: () => ipcRenderer.send('minimize-window'),
   // 关闭窗口
   close: () => ipcRenderer.send('close-window'),
+
+  // Store相关操作
+  getStore: (key: string) => ipcRenderer.invoke('getStore', key),
+  setStore: (key: string, value: any) => ipcRenderer.invoke('setStore', key, value),
+  deleteStore: (key: string) => ipcRenderer.invoke('deleteStore', key),
+  hasStore: (key: string) => ipcRenderer.invoke('hasStore', key),
+  clearStore: () => ipcRenderer.invoke('clearStore'),
 })
