@@ -41,6 +41,7 @@ function SettingsDrawer() {
 
   const toggleTheme = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
+    event.preventDefault();
 
     const rect = event.currentTarget.getBoundingClientRect();
     const x = rect.left + rect.width / 2;
@@ -80,12 +81,13 @@ function SettingsDrawer() {
 
         document.documentElement.animate(
           {
-            clipPath: clipPath, // 始终从小到大的圆形展开
+            clipPath: clipPath,
           },
           {
-            duration: 400,
-            easing: "ease-in-out",
-            pseudoElement: "::view-transition-new(root)", // 统一使用 new
+            duration: 500,
+            easing: "ease-in",
+            pseudoElement: "::view-transition-new(root)",
+            fill: "forwards",
           }
         );
       });
@@ -102,33 +104,35 @@ function SettingsDrawer() {
 
     setTimeout(() => {
       document.documentElement.style.setProperty("--theme-transition", "0");
-    }, 400);
+    }, 500);
   };
 
   return (
-    <Drawer.Root direction="bottom" dismissible={true} modal={true}>
+    <Drawer.Root dismissible={true}>
       <Drawer.Trigger asChild>
         <Button
           size="icon"
-          className="btn-no-border flex-center app-region-no-drag relative z-[102]"
+          className="btn-no-border flex-center app-region-no-drag relative"
         >
           <Music2 className="h-5 w-5" strokeWidth={3} />
         </Button>
       </Drawer.Trigger>
       <Drawer.Portal>
-        <Drawer.Overlay className="flex flex-col h-full fixed w-full bg-black/20 z-[-1] rounded-[10px]" />
+        {/* 降低Overlay的z-index，确保不会覆盖Content */}
+        <Drawer.Overlay className="flex flex-col h-full fixed w-full bg-black/20 rounded-[10px]" />
         <Drawer.Content
-          className="flex flex-col w-full h-[90vh] fixed bottom-0 p-6 pt-0
-          bg-light-bg dark:bg-dark-bg rounded-t-[12px] z-[100] 
+          className="flex flex-col w-full h-[85vh] fixed bottom-0 p-6 pt-0
+          bg-light-bg dark:bg-dark-bg rounded-t-[12px] rounded-b-[10px]
           shadow-[0_-4px_4px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-2px_rgba(0,0,0,0.05)] 
           dark:shadow-[0_-4px_4px_-1px_rgba(0,0,0,0.5),0_-2px_4px_-2px_rgba(0,0,0,0.2)]"
         >
-          {/* 美化的 Handle */}
-          <div className="flex justify-center py-3">
-            <Handle
-              className=" bg-gray-300 dark:bg-gray-600 
+          {/* 美化的 Handle，增加z-index和pointer-events */}
+          <div className="flex justify-center py-3 relative">
+            <Drawer.Handle
+              className="bg-gray-300 dark:bg-gray-600 
               cursor-grab active:cursor-grabbing transition-colors 
-              hover:bg-gray-400 dark:hover:bg-gray-500"
+              hover:bg-gray-400 dark:hover:bg-gray-500
+              app-region-drag pointer-events-auto"
             />
           </div>
 
@@ -140,7 +144,7 @@ function SettingsDrawer() {
             <Separator className="my-2" />
           </div>
 
-          <div className="space-y-6 flex-1 app-region-no-drag">
+          <div className="space-y-6 flex-1 app-region-no-drag pointer-events-auto">
             {/* 主题设置 */}
             <div className="flex-between">
               <div className="space-y-1">
@@ -152,7 +156,7 @@ function SettingsDrawer() {
                 onClick={toggleTheme}
                 className="app-region-no-drag rounded-3xl btn-no-border px-4 
                 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 
-                transition-colors relative z-[200]"
+                transition-colors relative pointer-events-auto"
               >
                 <span className="flex-center gap-2">
                   {theme === "light" ? (

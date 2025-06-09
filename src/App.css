@@ -71,10 +71,17 @@ body,
 }
 
 /* 禁止拖拽的区域 */
-.app-region-no-drag,
+.app-region-no-drag {
+  -webkit-app-region: no-drag !important;
+  app-region: no-drag !important;
+  pointer-events: auto !important;
+}
+
+/* 确保子元素也继承no-drag属性 */
 .app-region-no-drag * {
   -webkit-app-region: no-drag !important;
   app-region: no-drag !important;
+  pointer-events: auto !important;
 }
 
 /* 允许拖拽的 Handle 区域 */
@@ -94,13 +101,14 @@ body,
 
   /* 优化的圆形展开动画 */
   ::view-transition-new(root) {
-    animation: theme-fade-in 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: theme-fade-in 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   ::view-transition-old(root) {
-    animation: theme-fade-out 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: theme-fade-out 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  /* 回退方案的动画，确保背景色不会变透明 */
   html[style*="--theme-transition: 1"]::before {
     content: "";
     position: fixed;
@@ -110,6 +118,8 @@ body,
     background: var(--theme-bg, #ffffff);
     clip-path: circle(0% at var(--circle-position-x) var(--circle-position-y));
     animation: circle-reveal 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    backface-visibility: hidden; /* 防止闪烁 */
+    will-change: clip-path; /* 优化性能 */
   }
 
   html.dark[style*="--theme-transition: 1"]::before {
