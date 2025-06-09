@@ -101,11 +101,8 @@ function createWindow() {
       preload: path.join(__dirname, "preload.mjs"),
       nodeIntegration: false,
       contextIsolation: true,
+      webSecurity: true,
     },
-    vibrancy: "under-window", // macOS 上的毛玻璃效果
-    visualEffectState: "active", // macOS 上的视觉效果
-    // Windows 上的圆角设置
-    roundedCorners: true,
   });
 
   // 处理窗口关闭事件

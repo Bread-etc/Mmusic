@@ -24,7 +24,7 @@ function TopBar() {
       <div className="w-[60%] app-region-no-drag">
         <Input
           className="bg-[#f5f5f5] 
-          dark:bg-[#1e1e1e]
+          dark:bg-[#000000]
           border-none
           dark:text-white
           text-black

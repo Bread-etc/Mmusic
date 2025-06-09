@@ -3,20 +3,18 @@ import { presetShadcn } from "unocss-preset-shadcn";
 import presetAnimations from "unocss-preset-animations";
 
 export default defineConfig({
-  presets: [presetWind3(), presetAnimations({}), presetShadcn()],
+  presets: [presetWind3(), presetAnimations(), presetShadcn()],
   shortcuts: {
     // 标题样式
     "title-large":
-      "font-bold text-2xl font-noto tracking-wide text-black dark:text-white",
-    "title-middle":
-      "font-medium text-xl font-noto tracking-normal text-black dark:text-white",
-    "title-small": "font-medium text-lg font-noto text-black dark:text-white",
+      "font-extraBold text-lg font-noto tracking-wide text-black dark:text-white",
+    "title-small": "font-medium text-base font-noto text-black dark:text-white",
 
     // 正文样式
     "text-body":
       "font-normal text-base font-noto leading-normal text-black dark:text-white",
     "text-body-bold":
-      "font-bold font-nototext-base font-noto text-black dark:text-white",
+      "font-bold font-noto text-base font-noto text-black dark:text-white",
     "text-caption": "font-normal text-sm font-noto leading-snug text-gray-500",
 
     // 常用组合
@@ -27,25 +25,26 @@ export default defineConfig({
     // btn
     "btn-no-border":
       "border-none active:border-none hover:border-none focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0 outline-none focus:outline-none active:outline-none !ring-0 !ring-offset-0",
-
-    // 动画
-    "hover:animate-none": "hover:animation-none",
   },
   rules: [
     [
       "app-region-drag",
       {
-        "-webkit-app-region": "drag",
         "app-region": "drag",
       },
     ],
     [
       "app-region-no-drag",
       {
-        "-webkit-app-region": "no-drag",
         "app-region": "no-drag",
       },
     ],
+    [
+      "user-select-none",
+      {
+        "user-select": "none",
+      }
+    ]
   ],
   theme: {
     /* 字体 */
@@ -56,18 +55,23 @@ export default defineConfig({
       sm: "14px",
       base: "16px",
       lg: "18px",
-      xl: "20px",
-      "2xl": "24px",
     },
     fontWeight: {
       normal: "400",
       medium: "500",
       bold: "700",
+      extraBold: "800",
     },
     /* 颜色 */
     colors: {
-      light: {},
-      dark: {},
+      light: {
+        bg: "#fff",
+        text: "#000",
+      },
+      dark: {
+        bg: "#1e1e1e",
+        text: "#fff",
+      },
     },
   },
 });
