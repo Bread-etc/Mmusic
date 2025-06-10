@@ -8,7 +8,7 @@
  */
 import { Moon, Music2, Sun } from "lucide-react";
 import { Button } from "./ui/button";
-import { Drawer, Handle } from "vaul";
+import { Drawer } from "vaul";
 import { Separator } from "./ui/separator";
 import React, { useEffect, useState } from "react";
 
@@ -17,6 +17,7 @@ type SavedTheme = "light" | "dark" | null;
 
 function SettingsDrawer() {
   const [theme, setTheme] = useState<Theme>("light");
+  const [isOpen, setIsOpen] = useState(false);
 
   // 初始化主题
   useEffect(() => {
@@ -40,9 +41,6 @@ function SettingsDrawer() {
   }, []);
 
   const toggleTheme = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    event.preventDefault();
-
     const rect = event.currentTarget.getBoundingClientRect();
     const x = rect.left + rect.width / 2;
     const y = rect.top + rect.height / 2;
@@ -108,31 +106,30 @@ function SettingsDrawer() {
   };
 
   return (
-    <Drawer.Root dismissible={true}>
+    <Drawer.Root onOpenChange={(open) => setIsOpen(open)}>
       <Drawer.Trigger asChild>
         <Button
           size="icon"
-          className="btn-no-border flex-center app-region-no-drag relative"
+          className="btn-no-border flex-center app-region-no-drag"
+          disabled={isOpen}
         >
           <Music2 className="h-5 w-5" strokeWidth={3} />
         </Button>
       </Drawer.Trigger>
       <Drawer.Portal>
-        {/* 降低Overlay的z-index，确保不会覆盖Content */}
-        <Drawer.Overlay className="flex flex-col h-full fixed w-full bg-black/20 rounded-[10px]" />
+        <Drawer.Overlay className="bg-black/20 rounded-[10px] inset-0" />
         <Drawer.Content
-          className="flex flex-col w-full h-[85vh] fixed bottom-0 p-6 pt-0
-          bg-light-bg dark:bg-dark-bg rounded-t-[12px] rounded-b-[10px]
+          className="flex flex-col p-6 pt-0 rounded-t-[12px] rounded-b-[10px]
+          bg-light-bg dark:bg-dark-bg w-full h-[85vh] fixed bottom-0 outline-none
           shadow-[0_-4px_4px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-2px_rgba(0,0,0,0.05)] 
           dark:shadow-[0_-4px_4px_-1px_rgba(0,0,0,0.5),0_-2px_4px_-2px_rgba(0,0,0,0.2)]"
         >
-          {/* 美化的 Handle，增加z-index和pointer-events */}
-          <div className="flex justify-center py-3 relative">
+          <div className="flex justify-center py-3">
             <Drawer.Handle
               className="bg-gray-300 dark:bg-gray-600 
-              cursor-grab active:cursor-grabbing transition-colors 
+              cursor-grab active:cursor-grabbing
               hover:bg-gray-400 dark:hover:bg-gray-500
-              app-region-drag pointer-events-auto"
+              app-region-no-drag"
             />
           </div>
 
@@ -144,7 +141,7 @@ function SettingsDrawer() {
             <Separator className="my-2" />
           </div>
 
-          <div className="space-y-6 flex-1 app-region-no-drag pointer-events-auto">
+          <div className="space-y-6 flex-1">
             {/* 主题设置 */}
             <div className="flex-between">
               <div className="space-y-1">
@@ -155,8 +152,7 @@ function SettingsDrawer() {
                 variant="outline"
                 onClick={toggleTheme}
                 className="app-region-no-drag rounded-3xl btn-no-border px-4 
-                text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 
-                transition-colors relative pointer-events-auto"
+                text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 <span className="flex-center gap-2">
                   {theme === "light" ? (
@@ -173,7 +169,9 @@ function SettingsDrawer() {
                 </span>
               </Button>
             </div>
-            {/* 切换播放速度 */}
+
+            {/* 其他设置可以在这里添加 */}
+            {/* 例如语言、播放速度等 */}
           </div>
         </Drawer.Content>
       </Drawer.Portal>

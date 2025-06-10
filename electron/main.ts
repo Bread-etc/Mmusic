@@ -14,6 +14,7 @@ import Store from "electron-store";
 
 const store = new Store();
 
+/* @ts-ignore */
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -95,11 +96,12 @@ function createWindow() {
     resizable: true,
     frame: false,
     transparent: true,
-    backgroundColor: "rgba(0, 0, 0, 0)",
+    backgroundColor: "#00000000",
+    title: "MMusic",
     icon: path.join(process.env.VITE_PUBLIC, "icon.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.mjs"),
-      nodeIntegration: false,
+      nodeIntegration: true,
       contextIsolation: true,
       webSecurity: true,
     },

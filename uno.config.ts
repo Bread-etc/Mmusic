@@ -25,26 +25,14 @@ export default defineConfig({
     // btn
     "btn-no-border":
       "border-none active:border-none hover:border-none focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0 outline-none focus:outline-none active:outline-none !ring-0 !ring-offset-0",
+
+    // app-region
+    "app-region-drag": "app-region-drag",
+    "app-region-no-drag": "app-region-no-drag pointer-events-auto",
   },
   rules: [
-    [
-      "app-region-drag",
-      {
-        "app-region": "drag",
-      },
-    ],
-    [
-      "app-region-no-drag",
-      {
-        "app-region": "no-drag",
-      },
-    ],
-    [
-      "user-select-none",
-      {
-        "user-select": "none",
-      }
-    ]
+    ["app-region-drag", { "app-region": "drag" }],
+    ["app-region-no-drag", { "app-region": "no-drag" }],
   ],
   theme: {
     /* 字体 */
