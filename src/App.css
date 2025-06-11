@@ -40,7 +40,7 @@
   src:
     local("Noto Sans SC"),
     url("/fonts/NotoSansSC-ExtraBold.woff2") format("woff2");
-  font-weight: 900;
+  font-weight: 800;
   font-style: normal;
   font-display: swap;
 }

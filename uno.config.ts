@@ -7,17 +7,17 @@ export default defineConfig({
   shortcuts: {
     // 标题样式
     "title-large":
-      "font-extraBold text-lg font-noto tracking-wide text-black dark:text-white",
-    "title-small": "font-medium text-base font-noto text-black dark:text-white",
+      "font-extraBold text-lg font-noto tracking-wide theme-text",
+    "title-small": "font-medium text-base font-noto theme-text",
 
     // 正文样式
     "text-body":
-      "font-normal text-base font-noto leading-normal text-black dark:text-white",
+      "font-normal text-base font-noto leading-normal theme-text",
     "text-body-bold":
-      "font-bold font-noto text-base font-noto text-black dark:text-white",
+      "font-bold font-noto text-base font-noto theme-text",
     "text-caption": "font-normal text-sm font-noto leading-snug text-gray-500",
 
-    // 常用组合
+    // 弹性盒
     "flex-center": "flex items-center justify-center",
     "flex-between": "flex items-center justify-between",
     "flex-align-center": "flex justify-center items-center flex-col",
@@ -29,6 +29,9 @@ export default defineConfig({
     // app-region
     "app-region-drag": "app-region-drag",
     "app-region-no-drag": "app-region-no-drag pointer-events-auto",
+
+    // text colors for theme
+    "theme-text": "text-black dark:text-white"
   },
   rules: [
     ["app-region-drag", { "app-region": "drag" }],
@@ -36,9 +39,7 @@ export default defineConfig({
   ],
   theme: {
     /* 字体 */
-    fontFamily: {
-      noto: "Noto Sans SC, Arial, Helvetica, system-ui, -apple-system, sans-serif",
-    },
+    fontFamily: { noto: "Noto Sans SC, Arial, Helvetica, system-ui, -apple-system, sans-serif" },
     fontSize: {
       sm: "14px",
       base: "16px",

@@ -5,6 +5,7 @@ import { Minimize2, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import SettingsDrawer from "./SettingsDrawer";
+import { useEffect } from "react";
 
 function TopBar() {
   const handleMinimize = () => {
@@ -15,6 +16,10 @@ function TopBar() {
     window.ipcRenderer.send("close-window");
   };
 
+  useEffect(() => {
+    // 监听搜索事件
+  }, []);
+
   return (
     <div className="flex justify-between items-center h-[10%] w-full px-4">
       <div className="w-[20%]">
@@ -23,7 +28,7 @@ function TopBar() {
 
       <div className="w-[60%] app-region-no-drag">
         <Input
-          className="bg-[#f5f5f5] 
+          className="bg-[#f5f5f5]
           dark:bg-[#000000]
           border-none
           dark:text-white
@@ -47,7 +52,7 @@ function TopBar() {
           onClick={handleMinimize}
           className="btn-no-border flex-center bg-transparent hover:bg-transparent"
         >
-          <Minimize2 className="h-5 w-5 text-black dark:text-white" />
+          <Minimize2 className="h-5 w-5 theme-text" />
         </Button>
         <Button
           variant="ghost"
@@ -55,7 +60,7 @@ function TopBar() {
           onClick={handleClose}
           className="btn-no-border flex-center bg-transparent hover:bg-transparent"
         >
-          <X className="h-5 w-5 text-black dark:text-white" />
+          <X className="h-5 w-5 theme-text" />
         </Button>
       </div>
     </div>

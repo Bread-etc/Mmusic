@@ -110,7 +110,7 @@ function SettingsDrawer() {
       <Drawer.Trigger asChild>
         <Button
           size="icon"
-          className="btn-no-border flex-center app-region-no-drag"
+          className="btn-no-border flex-center app-region-no-drag animate-spin hover:animate-paused animate-duration-2000"
           disabled={isOpen}
         >
           <Music2 className="h-5 w-5" strokeWidth={3} />
@@ -119,7 +119,7 @@ function SettingsDrawer() {
       <Drawer.Portal>
         <Drawer.Overlay className="bg-black/20 rounded-[10px] inset-0" />
         <Drawer.Content
-          className="flex flex-col p-6 pt-0 rounded-t-[12px] rounded-b-[10px]
+          className="flex flex-col p-6 pt-0 rounded-t-[12px] rounded-b-[10px] app-region-no-drag
           bg-light-bg dark:bg-dark-bg w-full h-[85vh] fixed bottom-0 outline-none
           shadow-[0_-4px_4px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-2px_rgba(0,0,0,0.05)] 
           dark:shadow-[0_-4px_4px_-1px_rgba(0,0,0,0.5),0_-2px_4px_-2px_rgba(0,0,0,0.2)]"
@@ -152,7 +152,7 @@ function SettingsDrawer() {
                 variant="outline"
                 onClick={toggleTheme}
                 className="app-region-no-drag rounded-3xl btn-no-border px-4 
-                text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+                theme-text hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 <span className="flex-center gap-2">
                   {theme === "light" ? (
