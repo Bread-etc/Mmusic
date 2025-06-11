@@ -31,8 +31,7 @@ function TopBar() {
           className="bg-[#f5f5f5]
           dark:bg-[#000000]
           border-none
-          dark:text-white
-          text-black
+          theme-text
           w-1/2
           h-8
           mx-auto

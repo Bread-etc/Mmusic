@@ -54,12 +54,12 @@ export default defineConfig({
     /* 颜色 */
     colors: {
       light: {
-        bg: "#fff",
-        text: "#000",
+        bg: "#ffffff",  // 白色
+        text: "#000000",  // 黑色
       },
       dark: {
-        bg: "#1e1e1e",
-        text: "#fff",
+        bg: "#1e1e1e",  // 浅黑色
+        text: "#ffffff",  // 白色
       },
     },
   },
