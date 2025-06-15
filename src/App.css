@@ -7,9 +7,7 @@
 
 @font-face {
   font-family: "Noto Sans SC";
-  src:
-    local("Noto Sans SC"),
-    url("/fonts/NotoSansSC-Regular.woff2") format("woff2");
+  src: local("Noto Sans SC"), url("/fonts/NotoSansSC-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -17,9 +15,7 @@
 
 @font-face {
   font-family: "Noto Sans SC";
-  src:
-    local("Noto Sans SC"),
-    url("/fonts/NotoSansSC-Medium.woff2") format("woff2");
+  src: local("Noto Sans SC"), url("/fonts/NotoSansSC-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -27,9 +23,7 @@
 
 @font-face {
   font-family: "Noto Sans SC";
-  src:
-    local("Noto Sans SC"),
-    url("/fonts/NotoSansSC-Bold.woff2") format("woff2");
+  src: local("Noto Sans SC"), url("/fonts/NotoSansSC-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -37,17 +31,14 @@
 
 @font-face {
   font-family: "Noto Sans SC";
-  src:
-    local("Noto Sans SC"),
-    url("/fonts/NotoSansSC-ExtraBold.woff2") format("woff2");
-  font-weight: 800;
+  src: local("Noto Sans SC"), url("/fonts/NotoSansSC-ExtraBold.woff2") format("woff2");
+  font-weight: 900;
   font-style: normal;
   font-display: swap;
 }
 
 :root {
-  --font-family:
-    "Noto Sans SC", Arial, Helvetica, system-ui, -apple-system, sans-serif;
+  --font-family: "Noto Sans SC", Arial, Helvetica, system-ui, -apple-system, sans-serif;
   --theme-transition: 0;
   --circle-position-x: 50%;
   --circle-position-y: 50%;
@@ -66,14 +57,6 @@ body,
   font-weight: 400;
 }
 
-body {
-  @apply flex flex-col items-center;
-}
-
-#root {
-  @apply bg-light-bg dark:bg-dark-bg border-[10px];
-}
-
 .app {
   width: 100%;
   height: 100%;
@@ -84,10 +67,32 @@ body {
   overflow: hidden;
   -webkit-app-region: drag;
   app-region: drag;
+  user-select: none;
+}
+
+/* 禁止拖拽的区域 */
+.app-region-no-drag {
+  -webkit-app-region: no-drag !important;
+  app-region: no-drag !important;
+  pointer-events: auto !important;
+}
+
+/* 确保子元素也继承no-drag属性 */
+.app-region-no-drag * {
+  -webkit-app-region: no-drag !important;
+  app-region: no-drag !important;
+  pointer-events: auto !important;
+}
+
+/* 允许拖拽的 Handle 区域 */
+.app-region-drag {
+  -webkit-app-region: drag !important;
+  app-region: drag !important;
 }
 
 /* 主题切换动画（View Transition API 和回退方案） */
 @media (prefers-reduced-motion: no-preference) {
+
   ::view-transition-old(root),
   ::view-transition-new(root) {
     mix-blend-mode: normal;
@@ -113,8 +118,6 @@ body {
     background: var(--theme-bg, #ffffff);
     clip-path: circle(0% at var(--circle-position-x) var(--circle-position-y));
     animation: circle-reveal 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    backface-visibility: hidden; /* 防止闪烁 */
-    will-change: clip-path; /* 优化性能 */
   }
 
   html.dark[style*="--theme-transition: 1"]::before {
@@ -132,9 +135,7 @@ body {
   }
 
   100% {
-    clip-path: circle(
-      150% at var(--circle-position-x) var(--circle-position-y)
-    );
+    clip-path: circle(150% at var(--circle-position-x) var(--circle-position-y));
   }
 }
 

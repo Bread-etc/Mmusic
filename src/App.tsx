@@ -2,6 +2,8 @@ import "./App.css";
 import TopBar from "./components/TopBar";
 import MainContent from "./components/MainContent";
 import Dock from "./components/Dock";
+import { Toaster } from "sonner";
+import { GlobalLoading } from "./components/GlobalLoading";
 
 function App() {
   return (
@@ -9,6 +11,8 @@ function App() {
       <TopBar />
       <MainContent />
       <Dock />
+      <Toaster />
+      <GlobalLoading />
     </div>
   );
 }
