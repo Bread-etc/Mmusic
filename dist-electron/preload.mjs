@@ -3,7 +3,10 @@ const electron = require("electron");
 electron.contextBridge.exposeInMainWorld("ipcRenderer", {
   on(...args) {
     const [channel, listener] = args;
-    return electron.ipcRenderer.on(channel, (event, ...args2) => listener(event, ...args2));
+    return electron.ipcRenderer.on(
+      channel,
+      (event, ...args2) => listener(event, ...args2)
+    );
   },
   off(...args) {
     const [channel, ...omit] = args;
@@ -27,4 +30,9 @@ electron.contextBridge.exposeInMainWorld("ipcRenderer", {
   deleteStore: (key) => electron.ipcRenderer.invoke("deleteStore", key),
   hasStore: (key) => electron.ipcRenderer.invoke("hasStore", key),
   clearStore: () => electron.ipcRenderer.invoke("clearStore")
+});
+electron.contextBridge.exposeInMainWorld("http", {
+  request: (config) => electron.ipcRenderer.invoke("http:request", config),
+  setCookie: (platform, cookie) => electron.ipcRenderer.invoke("http:setCookie", platform, cookie),
+  getCookie: (platform) => electron.ipcRenderer.invoke("http:getCookie", platform)
 });

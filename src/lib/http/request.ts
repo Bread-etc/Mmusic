@@ -7,7 +7,6 @@ const { setLoading } = useLoadingStore.getState();
 export async function httpRequest<T = any>(config: RequestConfig): Promise<T> {
   if (config.showLoading) setLoading(true);
   try {
-    // @ts-ignore
     const res = await window.http.request(config);
     if (!res.success && config.showError !== false) {
       toast.error(res.message || "请求失败");
@@ -25,11 +24,9 @@ export async function httpRequest<T = any>(config: RequestConfig): Promise<T> {
 
 // 设置、获取cookie
 export function setPlatformCookie(platform: string, cookie: string) {
-  // @ts-ignore
   return window.http.setCookie(platform, cookie);
 }
 
 export function getPlatformCookie(platform: string) {
-  // @ts-ignore
   return window.http.getCookie(platform);
 }

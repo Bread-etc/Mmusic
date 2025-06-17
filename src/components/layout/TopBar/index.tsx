@@ -1,11 +1,10 @@
-/**
- * 顶部栏组件 TopBar.tsx
- */
-import { Minimize2, X } from "lucide-react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import SettingsDrawer from "./SettingsDrawer";
+import { Minimize2, X } from "lucide-react";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
 import { useEffect } from "react";
+import { searchNetease } from "@/lib/music/netease";
+import { SearchResultForNetease } from "@/types/NeteaseServices";
 
 function TopBar() {
   const handleMinimize = () => {
@@ -17,7 +16,15 @@ function TopBar() {
   };
 
   useEffect(() => {
-    // 监听搜索事件
+    async function fetchData() {
+      const res = await searchNetease("周杰伦");
+      if (res.success) {
+        console.log("搜索结果：", res.data.result as SearchResultForNetease);
+      } else {
+        console.error("搜索失败：", res.message);
+      }
+    }
+    fetchData();
   }, []);
 
   return (

@@ -1,9 +1,9 @@
 import "./App.css";
-import TopBar from "./components/TopBar";
-import MainContent from "./components/MainContent";
-import Dock from "./components/Dock";
+import TopBar from "./components/layout/TopBar";
+import MainContent from "./components/layout/MainContent";
+import Dock from "./components/layout/Dock";
 import { Toaster } from "sonner";
-import { GlobalLoading } from "./components/GlobalLoading";
+import { GlobalLoading } from "./components/common/GlobalLoading";
 
 function App() {
   return (

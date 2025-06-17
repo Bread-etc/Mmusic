@@ -13,7 +13,7 @@ const store = new Store();
 
 // 统一处理请求
 ipcMain.handle(
-  "http.request",
+  "http:request",
   async (_event, config: AxiosRequestConfig & { platform?: Platform }) => {
     if (config.platform) {
       const cookie = store.get(`cookies.${config.platform}`);

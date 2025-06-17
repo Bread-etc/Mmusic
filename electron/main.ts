@@ -11,6 +11,7 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import Store from "electron-store";
+import "./request";
 
 const store = new Store();
 
@@ -104,6 +105,8 @@ function createWindow() {
       nodeIntegration: true,
       contextIsolation: true,
       webSecurity: true,
+      enableWebSQL: false,
+      spellcheck: false,
     },
   });
 
