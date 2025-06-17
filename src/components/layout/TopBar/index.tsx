@@ -56,7 +56,7 @@ function TopBar() {
           variant="ghost"
           size="icon"
           onClick={handleMinimize}
-          className="btn-no-border flex-center bg-transparent hover:bg-transparent"
+          className="btn-no-border flex-center bg-transparent hover:bg-transparent cursor-pointer"
         >
           <Minimize2 className="h-5 w-5 theme-text" />
         </Button>
@@ -64,7 +64,7 @@ function TopBar() {
           variant="ghost"
           size="icon"
           onClick={handleClose}
-          className="btn-no-border flex-center bg-transparent hover:bg-transparent"
+          className="btn-no-border flex-center bg-transparent hover:bg-transparent cursor-pointer"
         >
           <X className="h-5 w-5 theme-text" />
         </Button>

@@ -1,10 +1,9 @@
 /**
  * 总设置抽屉
- * @function setSystemTheme 切换主题
- * @function setLanguage 切换语言
- * @function setPlaybackSpeed 切换播放速度
- * @function setPlaybackQuality 切换播放质量
- * @function 设置背景透明度
+ * @function setSystemTheme 切换主题 ✔
+ * @function setLanguage 切换语言 ❌
+ * @function setPlaySpeed 切换播放速度 ❌
+ * @function setPlayQuality 切换播放质量 ❌
  */
 import { Moon, Music2, Sun } from "lucide-react";
 import { Button } from "../../ui/button";
@@ -169,9 +168,6 @@ function SettingsDrawer() {
                 </span>
               </Button>
             </div>
-
-            {/* 其他设置可以在这里添加 */}
-            {/* 例如语言、播放速度等 */}
           </div>
         </Drawer.Content>
       </Drawer.Portal>
