@@ -1,12 +1,12 @@
 import { Input } from "@/components/ui/input";
 import { searchNetease } from "@/lib/music/neteaseService";
-import { useSearchStore } from "@/store/searchResult";
+import { useSearchResultStore } from "@/store/searchResult";
 import { useRef, useState } from "react";
 
 export function SearchInput() {
   const [keyword, setKeyword] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const { setSearchResults } = useSearchStore();
+  const { setSearchResults } = useSearchResultStore();
 
   const handleSearch = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {

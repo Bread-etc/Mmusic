@@ -1,11 +1,10 @@
-import { useSearchStore } from "@/store/searchResult";
+import { useSearchResultStore } from "@/store/searchResult";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SongCard from "./SongCard";
 
 function MainContent() {
-  const { searchResults } = useSearchStore();
+  const { searchResults } = useSearchResultStore();
 
-  // 如果没有搜索结果
   if (!searchResults) {
     return (
       <div className="flex-center h-[75%] w-full">
@@ -16,10 +15,12 @@ function MainContent() {
 
   return (
     <div className="flex-center h-[75%] w-full">
-      <ScrollArea className="h-full w-full rounded-md border-none">
-        {searchResults.songs.map((song) => (
-          <SongCard key={song.id} song={song} />
-        ))}
+      <ScrollArea className="h-full w-full">
+        <div className="flex flex-col gap-2 pr-4">
+          {searchResults.songs.map((song) => (
+            <SongCard key={song.id} song={song} />
+          ))}
+        </div>
       </ScrollArea>
     </div>
   );
