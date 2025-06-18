@@ -1,10 +1,7 @@
 import SettingsDrawer from "./SettingsDrawer";
 import { Minimize2, X } from "lucide-react";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
-import { useEffect } from "react";
-import { searchNetease } from "@/lib/music/netease";
-import { SearchResultForNetease } from "@/types/NeteaseServices";
+import { Button } from "@/components/ui/button";
+import { SearchInput } from "./SearchInput";
 
 function TopBar() {
   const handleMinimize = () => {
@@ -15,40 +12,14 @@ function TopBar() {
     window.ipcRenderer.send("close-window");
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      const res = await searchNetease("周杰伦");
-      if (res.success) {
-        console.log("搜索结果：", res.data.result as SearchResultForNetease);
-      } else {
-        console.error("搜索失败：", res.message);
-      }
-    }
-    fetchData();
-  }, []);
-
   return (
     <div className="flex justify-between items-center h-[10%] w-full px-4">
       <div className="w-[20%]">
         <SettingsDrawer />
       </div>
 
-      <div className="w-[60%] app-region-no-drag">
-        <Input
-          className="bg-[#f5f5f5]
-          dark:bg-[#000000]
-          border-none
-          theme-text
-          w-1/2
-          h-8
-          mx-auto
-          font-noto
-          text-center
-          rounded-xl
-          focus-visible:ring-0
-          focus-visible:ring-offset-0"
-          placeholder="搜索"
-        />
+      <div className="w-[60%]">
+        <SearchInput />
       </div>
 
       <div className="w-[20%] flex items-center justify-end gap-3 app-region-no-drag">

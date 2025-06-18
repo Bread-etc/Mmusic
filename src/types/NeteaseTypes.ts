@@ -12,7 +12,7 @@ interface NeteaseArtists {
   trans: any;
 }
 
-interface NeteaseSongs {
+export interface NeteaseSongItem {
   album: Array<any>;
   alias: Array<any>;
   artists: Array<NeteaseArtists>;
@@ -29,8 +29,9 @@ interface NeteaseSongs {
   status: number;
 }
 
-export interface SearchResultForNetease {   // 为res.data.result下的类型
+export interface SearchResultForNetease {
+  // 为res.data.result下的类型
   hasMore: boolean;
   songCount: number;
-  songs: Array<NeteaseSongs>;
+  songs: Array<NeteaseSongItem>;
 }

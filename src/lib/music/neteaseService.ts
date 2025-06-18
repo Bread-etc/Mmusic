@@ -5,7 +5,7 @@ export function searchNetease(keyword: string) {
   return httpRequest({
     url: "/search",
     method: "GET",
-    params: { keywords: keyword },
+    params: { keywords: keyword, type: 1 }, // type=1 只搜索单曲
     platform: "netease",
     showLoading: true,
     showError: true,

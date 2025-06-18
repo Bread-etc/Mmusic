@@ -6,9 +6,9 @@
  * @function setPlayQuality 切换播放质量 ❌
  */
 import { Moon, Music2, Sun } from "lucide-react";
-import { Button } from "../../ui/button";
+import { Button } from "@/components/ui/button";
 import { Drawer } from "vaul";
-import { Separator } from "../../ui/separator";
+import { Separator } from "@/components/ui/separator";
 import React, { useEffect, useState } from "react";
 
 type Theme = "light" | "dark";
