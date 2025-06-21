@@ -1,5 +1,5 @@
 /* ===== 搜索 ===== */
-interface KugouSongItem {
+export interface KugouSongItem {
   PublishTime: string;
   Audioid: number;
   OldCpy: number;

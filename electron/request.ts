@@ -5,7 +5,7 @@ import Store from "electron-store";
 const baseUrls = {
   netease: "http://netease.hastur23.top",
   kugou: "http://kugou.hastur23.top",
-  bilibili: "https://api.bilibili.com",
+  // bilibili: "https://api.bilibili.com",
 } as const;
 
 type Platform = keyof typeof baseUrls;
