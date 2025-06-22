@@ -119,7 +119,7 @@ function SettingsDrawer() {
         <Drawer.Overlay className="bg-black/20 rounded-[10px] inset-0" />
         <Drawer.Content
           className="flex flex-col p-6 pt-0 rounded-t-[12px] rounded-b-[10px] app-region-no-drag
-          bg-light-bg dark:bg-dark-bg w-full h-[85vh] fixed bottom-0 outline-none
+          bg-light-bg dark:bg-dark-bg w-full h-[90vh] fixed bottom-0 outline-none
           shadow-[0_-4px_4px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-2px_rgba(0,0,0,0.05)] 
           dark:shadow-[0_-4px_4px_-1px_rgba(0,0,0,0.5),0_-2px_4px_-2px_rgba(0,0,0,0.2)]"
         >

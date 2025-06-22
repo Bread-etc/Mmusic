@@ -11,7 +11,7 @@ function App() {
       <TopBar />
       <MainContent />
       <Dock />
-      <Toaster />
+      <Toaster position="top-right" richColors duration={1000} />
       <GlobalLoading />
     </div>
   );

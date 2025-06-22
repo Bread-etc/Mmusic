@@ -29,7 +29,7 @@ export interface NeteaseSongItem {
   status: number;
 }
 
-export interface SearchResultForNetease {
+export interface NeteaseResultType {
   // 为res.data.result下的类型
   hasMore: boolean;
   songCount: number;

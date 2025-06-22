@@ -1,15 +1,17 @@
 import { create } from "zustand";
-import type { SearchResultForNetease } from "@/types/NeteaseTypes";
-import { SearchResultForKugou } from "@/types/KugouTypes";
+import type { NeteaseResultType } from "@/types/NeteaseTypes";
+import type { KugouResultType } from "@/types/KugouTypes";
 
-interface SearchState {
-  searchResults: SearchResultForNetease | SearchResultForKugou | null;
-  setSearchResults: (
-    results: SearchResultForNetease | SearchResultForKugou | null
-  ) => void;
+interface SearchResultState {
+  neteaseResults: NeteaseResultType | null;
+  kugouResults: KugouResultType | null;
+  setNeteaseResults: (results: NeteaseResultType | null) => void;
+  setKugouResults: (results: KugouResultType | null) => void;
 }
 
-export const useSearchResultStore = create<SearchState>((set) => ({
-  searchResults: null,
-  setSearchResults: (results) => set({ searchResults: results }),
+export const useSearchResultStore = create<SearchResultState>((set) => ({
+  neteaseResults: null,
+  kugouResults: null,
+  setNeteaseResults: (results) => set({ neteaseResults: results }),
+  setKugouResults: (results) => set({ kugouResults: results }),
 }));

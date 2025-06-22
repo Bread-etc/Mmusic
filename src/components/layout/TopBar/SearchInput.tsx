@@ -1,23 +1,28 @@
 import { Input } from "@/components/ui/input";
 import { searchNetease } from "@/lib/music/neteaseService";
+import { searchKugou } from "@/lib/music/kugouServices";
 import { useSearchResultStore } from "@/store/searchResult";
 import { useRef, useState } from "react";
 
 export function SearchInput() {
   const [keyword, setKeyword] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const { setSearchResults } = useSearchResultStore();
+  const { setNeteaseResults, setKugouResults } = useSearchResultStore();
 
   const handleSearch = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       const trimmedKeyword = keyword.trim();
       if (trimmedKeyword) {
-        const res = await searchNetease(trimmedKeyword);
-        if (res.success) {
-          setSearchResults(res.data.result);
-        }
+        // 并发请求两个平台
+        const [neteaseRes, kugouRes] = await Promise.all([
+          searchNetease(trimmedKeyword),
+          searchKugou(trimmedKeyword),
+        ]);
+        setNeteaseResults(neteaseRes.success ? neteaseRes.data.result : null);
+        setKugouResults(kugouRes.success ? kugouRes.data : null);
       } else {
-        setSearchResults(null);
+        setNeteaseResults(null);
+        setKugouResults(null);
       }
     }
 

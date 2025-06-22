@@ -1,13 +1,12 @@
 import { useSearchResultStore } from "@/store/searchResult";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SongCard from "./SongCard";
-import { isNeteaseResult, isKugouResult } from "@/types/typeGuards";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function MainContent() {
-  const { searchResults } = useSearchResultStore();
+  const { neteaseResults, kugouResults } = useSearchResultStore();
 
-  if (!searchResults) {
+  if (!neteaseResults && !kugouResults) {
     return (
       <div className="flex-center h-[75%] w-full">
         <div className="title-small text-center">搜索你喜欢的音乐</div>
@@ -22,12 +21,12 @@ function MainContent() {
           <TabsTrigger value="netease">网易云</TabsTrigger>
           <TabsTrigger value="kugou">酷狗</TabsTrigger>
         </TabsList>
-        <TabsContent value="netease" className="h-full">
-          {isNeteaseResult(searchResults) ? (
+        <TabsContent value="netease">
+          {neteaseResults ? (
             <ScrollArea className="w-full">
               <div className="flex flex-col gap-2 pr-4">
-                {searchResults.songs.map((song) => (
-                  <SongCard key={song.id} song={song} />
+                {neteaseResults.songs.map((song) => (
+                  <SongCard key={song.id} song={song} platform="netease" />
                 ))}
               </div>
             </ScrollArea>
@@ -37,12 +36,12 @@ function MainContent() {
             </div>
           )}
         </TabsContent>
-        <TabsContent value="kugou" className="h-full">
-          {isKugouResult(searchResults) ? (
+        <TabsContent value="kugou">
+          {kugouResults ? (
             <ScrollArea className="w-full">
               <div className="flex flex-col gap-2 pr-4">
-                {searchResults.data.lists.map((song) => (
-                  <SongCard key={song.FileHash} song={song} />
+                {kugouResults.data.lists.map((song) => (
+                  <SongCard key={song.FileHash} song={song} platform="kugou" />
                 ))}
               </div>
             </ScrollArea>

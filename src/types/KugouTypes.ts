@@ -120,7 +120,7 @@ export interface KugouSongItem {
   recommend_type: number;
 }
 
-export interface SearchResultForKugou {
+export interface KugouResultType {
   error_msg: string;
   data: {
     correctiontip: string;
