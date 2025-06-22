@@ -26905,8 +26905,8 @@ const {
   mergeConfig
 } = axios;
 const baseUrls = {
-  netease: "http://netease.hastur23.top",
-  kugou: "http://kugou.hastur23.top"
+  netease: "http://netease.hastur23.top"
+  // kugou: "http://kugou.hastur23.top",
   // bilibili: "https://api.bilibili.com",
 };
 const store$1 = new ElectronStore();

@@ -1,14 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
 import type { NeteaseSongItem } from "@/types/NeteaseTypes";
-import { KugouSongItem } from "@/types/KugouTypes";
 
 interface SongCardProps {
-  song: NeteaseSongItem | KugouSongItem;
-  platform: "netease" | "kugou";
+  song: NeteaseSongItem;
+  platform: "netease";
 }
 
-function SongCard({ song, platform }: SongCardProps) {
+function SongCard({ song }: SongCardProps) {
   return (
     <div
       className="
@@ -20,17 +19,9 @@ function SongCard({ song, platform }: SongCardProps) {
     >
       <div className="flex-1 flex gap-4 items-center">
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-bold truncate theme-text">
-            {platform === "netease"
-              ? (song as NeteaseSongItem).name
-              : (song as KugouSongItem).OriSongName}
-          </h3>
+          <h3 className="text-lg font-bold truncate theme-text">{song.name}</h3>
           <p className="text-sm text-gray-500 truncate mt-1">
-            {platform === "netease"
-              ? (song as NeteaseSongItem).artists
-                  .map((artist) => artist.name)
-                  .join(", ")
-              : (song as KugouSongItem).SingerName}
+            {song.artists.map((artist) => artist.name).join(", ")}
           </p>
         </div>
         <div className="opacity-0 group-hover:opacity-100 transition-opacity">
