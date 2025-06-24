@@ -13,6 +13,7 @@ function MainContent() {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const totalCount = useRef(0);
+  const listRef = useRef<any>(null);
 
   // 关键词变化时，重置分页和数据
   useEffect(() => {
@@ -23,10 +24,13 @@ function MainContent() {
       totalCount.current = 0;
       return;
     }
+    if (listRef.current) {
+      listRef.current.scrollToRow(0);
+    }
     // 首次加载
     (async () => {
       setLoading(true);
-      const res = await searchNetease(keyword, 0, 30);
+      const res = await searchNetease(keyword, 0);
       if (res.success) {
         setSongs(res.data.result.songs);
         totalCount.current = res.data.result.songCount;
@@ -47,7 +51,7 @@ function MainContent() {
     setLoading(true);
     const nextPage = page + 1;
     const offset = nextPage * 30;
-    const res = await searchNetease(keyword, offset, 30);
+    const res = await searchNetease(keyword, offset);
     if (res.success && res.data.result.songs.length > 0) {
       setSongs((prev) => [...prev, ...res.data.result.songs]);
       setPage(nextPage);
@@ -70,9 +74,9 @@ function MainContent() {
     );
   };
 
-  // 监听滚动到底部
+  // 监听滚动到底部，滚动到最后 3 行时加载更多
   const handleRowsRendered = ({ stopIndex }: { stopIndex: number }) => {
-    if (hasMore && stopIndex >= songs.length - 5 && !loading) {
+    if (hasMore && stopIndex >= songs.length - 3 && !loading) {
       loadMore();
     }
   };
@@ -88,24 +92,26 @@ function MainContent() {
   return (
     <div className="h-[75%] w-full">
       <AutoSizer>
-        {({ width, height }: { width: number; height: number }) => (
-          <List
-            width={width}
-            height={height}
-            rowCount={songs.length}
-            rowHeight={80}
-            rowRenderer={rowRenderer}
-            onRowsRendered={handleRowsRendered}
-            className="app-region-no-drag"
-          />
-        )}
+        {({ width, height }: { width: number; height: number }) => {
+          const rowHeight = Math.max(
+            60,
+            Math.floor(height / Math.min(songs.length, 5))
+          );
+          return (
+            <List
+              ref={listRef}
+              width={width}
+              height={height}
+              rowCount={songs.length}
+              rowHeight={rowHeight}
+              overscanRowCount={2}
+              rowRenderer={rowRenderer}
+              onRowsRendered={handleRowsRendered}
+              className="app-region-no-drag"
+            />
+          );
+        }}
       </AutoSizer>
-      {loading && (
-        <div className="text-center text-gray-400 py-2">加载中...</div>
-      )}
-      {!hasMore && (
-        <div className="text-center text-gray-400 py-2">没有更多了</div>
-      )}
     </div>
   );
 }

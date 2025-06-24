@@ -11,34 +11,34 @@ function SongCard({ song }: SongCardProps) {
   return (
     <div
       className="
-        flex items-center p-4 rounded-xl cursor-pointer group
-        bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800
-        shadow-sm hover:shadow-lg transition-all duration-200
+        h-full flex items-center p-4 rounded-2xl cursor-pointer group
+        bg-gradient-to-r from-white/80 to-blue-50 dark:from-neutral-900 dark:to-blue-950
+        border border-gray-200 dark:border-neutral-800
+        shadow-md hover:shadow-xl transition-all duration-200
         hover:border-primary/60
+        hover:scale-[1.02]
       "
     >
-      <div className="flex-1 flex gap-4 items-center">
-        <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-bold truncate theme-text">{song.name}</h3>
-          <p className="text-sm text-gray-500 truncate mt-1">
-            {song.artists.map((artist) => artist.name).join(", ")}
-          </p>
-        </div>
-        <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button
-            size="icon"
-            variant="ghost"
-            className="
-              h-9 w-9 rounded-full
-              bg-primary/10 hover:bg-primary/20
-              text-primary hover:text-white
-              hover:bg-primary
-              transition-all
-            "
-          >
-            <Play className="h-5 w-5" />
-          </Button>
-        </div>
+      <div className="flex-1 min-w-0">
+        <h3 className="text-lg font-bold truncate theme-text">{song.name}</h3>
+        <p className="text-sm text-gray-500 truncate mt-1">
+          {song.artists.map((artist) => artist.name).join(", ")}
+        </p>
+      </div>
+      <div className="opacity-0 group-hover:opacity-100 transition-opacity ml-2">
+        <Button
+          size="icon"
+          variant="ghost"
+          className="
+            h-9 w-9 rounded-full
+            bg-primary/10 hover:bg-primary/20
+            text-primary hover:text-white
+            hover:bg-primary
+            transition-all
+          "
+        >
+          <Play className="h-5 w-5" />
+        </Button>
       </div>
     </div>
   );

@@ -7,7 +7,9 @@
 
 @font-face {
   font-family: "Noto Sans SC";
-  src: local("Noto Sans SC"), url("/fonts/NotoSansSC-Regular.woff2") format("woff2");
+  src:
+    local("Noto Sans SC"),
+    url("/fonts/NotoSansSC-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -15,7 +17,9 @@
 
 @font-face {
   font-family: "Noto Sans SC";
-  src: local("Noto Sans SC"), url("/fonts/NotoSansSC-Medium.woff2") format("woff2");
+  src:
+    local("Noto Sans SC"),
+    url("/fonts/NotoSansSC-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -23,7 +27,9 @@
 
 @font-face {
   font-family: "Noto Sans SC";
-  src: local("Noto Sans SC"), url("/fonts/NotoSansSC-Bold.woff2") format("woff2");
+  src:
+    local("Noto Sans SC"),
+    url("/fonts/NotoSansSC-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -31,14 +37,17 @@
 
 @font-face {
   font-family: "Noto Sans SC";
-  src: local("Noto Sans SC"), url("/fonts/NotoSansSC-ExtraBold.woff2") format("woff2");
+  src:
+    local("Noto Sans SC"),
+    url("/fonts/NotoSansSC-ExtraBold.woff2") format("woff2");
   font-weight: 900;
   font-style: normal;
   font-display: swap;
 }
 
 :root {
-  --font-family: "Noto Sans SC", Arial, Helvetica, system-ui, -apple-system, sans-serif;
+  --font-family:
+    "Noto Sans SC", Arial, Helvetica, system-ui, -apple-system, sans-serif;
   --theme-transition: 0;
   --circle-position-x: 50%;
   --circle-position-y: 50%;
@@ -92,7 +101,6 @@ body,
 
 /* 主题切换动画（View Transition API 和回退方案） */
 @media (prefers-reduced-motion: no-preference) {
-
   ::view-transition-old(root),
   ::view-transition-new(root) {
     mix-blend-mode: normal;
@@ -135,7 +143,9 @@ body,
   }
 
   100% {
-    clip-path: circle(150% at var(--circle-position-x) var(--circle-position-y));
+    clip-path: circle(
+      150% at var(--circle-position-x) var(--circle-position-y)
+    );
   }
 }
 
@@ -157,4 +167,16 @@ body,
   100% {
     opacity: 0;
   }
+}
+
+/* 隐藏 react-virtualized 的滚动条 */
+.ReactVirtualized__Grid::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+.ReactVirtualized__Grid {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE/Edge */
 }
