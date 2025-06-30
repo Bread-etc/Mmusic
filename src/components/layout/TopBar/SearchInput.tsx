@@ -11,11 +11,8 @@ export function SearchInput() {
   const handleSearch = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       const trimmedKeyword = keyword.trim();
-      if (trimmedKeyword) {
-        // 并发请求两个平台 [netease, kugou]
-        setGlobalKeyword(trimmedKeyword);
-        setNeteaseResults(null);
-      }
+      setGlobalKeyword(trimmedKeyword);
+      setNeteaseResults(null);
     }
     if (e.key === "Escape") {
       inputRef.current?.blur();

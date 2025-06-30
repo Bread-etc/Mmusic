@@ -6,16 +6,13 @@ export default defineConfig({
   presets: [presetWind3(), presetAnimations(), presetShadcn()],
   shortcuts: {
     // 标题样式
-    "title-large":
-      "font-extraBold text-lg font-noto tracking-wide theme-text",
+    "title-large": "font-extraBold text-lg font-noto tracking-wide theme-text",
     "title-small": "font-medium text-base font-noto theme-text",
 
     // 正文样式
-    "text-body":
-      "font-normal text-base font-noto leading-normal theme-text",
-    "text-body-bold":
-      "font-bold font-noto text-base font-noto theme-text",
-    "text-caption": "font-normal text-sm font-noto leading-snug text-gray-500",
+    "text-body": "font-normal text-base font-noto leading-normal theme-text",
+    "text-body-bold": "font-bold font-noto text-base font-noto theme-text",
+    "text-caption": "font-normal text-xs font-noto leading-snug text-gray-500",
 
     // 弹性盒
     "flex-center": "flex items-center justify-center",
@@ -31,7 +28,7 @@ export default defineConfig({
     "app-region-no-drag": "app-region-no-drag pointer-events-auto",
 
     // text colors for theme
-    "theme-text": "text-black dark:text-white"
+    "theme-text": "text-black dark:text-white",
   },
   rules: [
     ["app-region-drag", { "app-region": "drag" }],
@@ -39,11 +36,8 @@ export default defineConfig({
   ],
   theme: {
     /* 字体 */
-    fontFamily: { noto: "Noto Sans SC, Arial, Helvetica, system-ui, -apple-system, sans-serif" },
-    fontSize: {
-      sm: "14px",
-      base: "16px",
-      lg: "18px",
+    fontFamily: {
+      noto: "Noto Sans SC, Arial, Helvetica, system-ui, -apple-system, sans-serif",
     },
     fontWeight: {
       normal: "400",
@@ -54,12 +48,12 @@ export default defineConfig({
     /* 颜色 */
     colors: {
       light: {
-        bg: "#ffffff",  // 白色
-        text: "#000000",  // 黑色
+        bg: "#ffffff", // 白色
+        text: "#000000", // 黑色
       },
       dark: {
-        bg: "#1e1e1e",  // 浅黑色
-        text: "#ffffff",  // 白色
+        bg: "#1e1e1e", // 浅黑色
+        text: "#ffffff", // 白色
       },
     },
   },

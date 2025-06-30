@@ -68,8 +68,8 @@ function MainContent() {
   const rowRenderer = ({ index, key, style }: any) => {
     const item = songs[index];
     return (
-      <div key={key} style={style}>
-        <SongCard song={item} platform="netease" />
+      <div key={key} style={style} className="app-region-no-drag">
+        <SongCard index={index} song={item} platform="netease" />
       </div>
     );
   };
@@ -93,10 +93,8 @@ function MainContent() {
     <div className="h-[75%] w-full">
       <AutoSizer>
         {({ width, height }: { width: number; height: number }) => {
-          const rowHeight = Math.max(
-            60,
-            Math.floor(height / Math.min(songs.length, 5))
-          );
+          const visibleRows = Math.max(1, Math.min(songs.length, 6));
+          const rowHeight = Math.max(60, Math.floor(height / visibleRows));
           return (
             <List
               ref={listRef}
@@ -107,7 +105,6 @@ function MainContent() {
               overscanRowCount={2}
               rowRenderer={rowRenderer}
               onRowsRendered={handleRowsRendered}
-              className="app-region-no-drag"
             />
           );
         }}
