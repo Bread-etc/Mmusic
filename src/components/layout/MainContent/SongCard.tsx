@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { AudioLines } from "lucide-react";
+import { Play } from "lucide-react";
 import type { NeteaseSongItem } from "@/types/NeteaseTypes";
 
 interface SongCardProps {
@@ -9,6 +9,13 @@ interface SongCardProps {
 }
 
 function SongCard({ index, song }: SongCardProps) {
+  const calcPlayTime = (duration: number): string => {
+    let time = Math.floor(duration / 1000);
+    let second = time % 60;
+    let min = (time - second) / 60;
+    return `${String(min).padStart(2, "0")}:${String(second).padEnd(2, "0")}`;
+  };
+
   return (
     <div className="h-full flex items-center px-6">
       {/* 序号 */}
@@ -22,13 +29,15 @@ function SongCard({ index, song }: SongCardProps) {
           {song.artists.map((artist) => artist.name).join(", ")}
         </span>
       </div>
+      {/* 歌曲时长 */}
+      <div className="text-caption mr-4">{calcPlayTime(song.duration)}</div>
       {/* 播放按钮 */}
       <Button
         size="icon"
         variant="outline"
         className="h-10 w-10 rounded-full btn-no-border theme-text"
       >
-        <AudioLines className="h-5 w-5" />
+        <Play className="h-4 w-4" />
       </Button>
     </div>
   );

@@ -12,4 +12,5 @@
 
 - `SongCard`下playerIcon动画，hover动画
 - `SearchList`列表图片
--
+- 添加其他音源`kugou/qq/migu`
+- 
