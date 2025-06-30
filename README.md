@@ -8,3 +8,8 @@
 - 歌曲详情（歌词、专辑、歌手信息等）
 - 播放列表管理
 
+## 待改进
+
+- `SongCard`下playerIcon动画，hover动画
+- `SearchList`列表图片
+-
