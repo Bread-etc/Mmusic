@@ -35,3 +35,13 @@ export interface NeteaseResultType {
   songCount: number;
   songs: Array<NeteaseSongItem>;
 }
+
+export type NeteaseSongQuality =
+  | "standard"
+  | "higher"
+  | "exhigh"
+  | "lossless"
+  | "hires"
+  | "jyeffect"
+  | "sky"
+  | "jymaster";
