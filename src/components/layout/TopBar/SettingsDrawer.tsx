@@ -1,15 +1,18 @@
 /**
  * 总设置抽屉
- * @function setSystemTheme 切换主题 ✔
+ * @function toggleTheme 切换主题 ✔
+ * @function loginByQrCode 二维码扫码登录 ✔
+ * @function logout 退出登录 ✔
  * @function setLanguage 切换语言 ❌
  * @function setPlaySpeed 切换播放速度 ❌
- * @function setPlayQuality 切换播放质量 ❌
  */
-import { Moon, Music2, Sun } from "lucide-react";
+import { Moon, Music2, QrCode, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Drawer } from "vaul";
 import { Separator } from "@/components/ui/separator";
 import React, { useEffect, useState } from "react";
+import { QrLoginDialog } from "./QrLoginDialog";
+import { toast } from "sonner";
 
 type Theme = "light" | "dark";
 type SavedTheme = "light" | "dark" | null;
@@ -104,6 +107,11 @@ function SettingsDrawer() {
     }, 500);
   };
 
+  const handleLogout = async () => {
+    await window.http.setCookie("netease", "");
+    toast.success("已退出登录");
+  };
+
   return (
     <Drawer.Root onOpenChange={(open) => setIsOpen(open)}>
       <Drawer.Trigger asChild>
@@ -132,15 +140,15 @@ function SettingsDrawer() {
             />
           </div>
 
-          <div className="pb-4 px-0">
+          <div className="px-0">
             <Drawer.Title className="title-large pb-1">常规设置</Drawer.Title>
             <Drawer.Description className="text-caption">
               按 Esc 键退出设置
             </Drawer.Description>
-            <Separator className="my-2" />
+            <Separator className="my-2 dark:bg-white/20 bg-black/20" />
           </div>
 
-          <div className="space-y-6 flex-1">
+          <div className="flex-1 space-y-4">
             {/* 主题设置 */}
             <div className="flex-between">
               <div className="space-y-1">
@@ -167,6 +175,27 @@ function SettingsDrawer() {
                   )}
                 </span>
               </Button>
+            </div>
+            {/* 主题设置 */}
+            <div className="flex-between">
+              <div className="space-y-1">
+                <span className="title-small">网易云音乐登录</span>
+                <div className="text-caption">扫描二维码登录</div>
+              </div>
+              <QrLoginDialog
+                trigger={
+                  <Button
+                    variant="outline"
+                    className="app-region-no-drag rounded-3xl btn-no-border px-4 
+                theme-text hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    <span className="flex-center gap-2">
+                      <QrCode className="h-4 w-4" />
+                      <span className="text-sm font-medium">点击扫码</span>
+                    </span>
+                  </Button>
+                }
+              />
             </div>
           </div>
         </Drawer.Content>

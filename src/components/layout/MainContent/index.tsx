@@ -3,15 +3,14 @@ import { useSearchResultStore } from "@/store/searchResult";
 import SongCard from "./SongCard";
 import { AutoSizer, List } from "react-virtualized";
 import "react-virtualized/styles.css";
-import { NeteaseSongItem } from "@/types/NeteaseTypes";
 import { searchNetease } from "@/lib/music/neteaseService";
+import { NeteaseSongItem } from "@/types/NeteaseTypes";
 
 function MainContent() {
   const { keyword } = useSearchResultStore();
   const [songs, setSongs] = useState<NeteaseSongItem[]>([]);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
   const totalCount = useRef(0);
   const listRef = useRef<any>(null);
 
@@ -29,7 +28,6 @@ function MainContent() {
     }
     // 首次加载
     (async () => {
-      setLoading(true);
       const res = await searchNetease(keyword, 0);
       if (res.success) {
         setSongs(res.data.result.songs);
@@ -41,14 +39,12 @@ function MainContent() {
         setHasMore(false);
         totalCount.current = 0;
       }
-      setLoading(false);
     })();
   }, [keyword]);
 
   // 加载下一页
   const loadMore = async () => {
-    if (loading || !hasMore) return;
-    setLoading(true);
+    if (!hasMore) return;
     const nextPage = page + 1;
     const offset = nextPage * 30;
     const res = await searchNetease(keyword, offset);
@@ -61,7 +57,6 @@ function MainContent() {
     } else {
       setHasMore(false);
     }
-    setLoading(false);
   };
 
   // 虚拟列表渲染
@@ -76,7 +71,7 @@ function MainContent() {
 
   // 监听滚动到底部，滚动到最后 3 行时加载更多
   const handleRowsRendered = ({ stopIndex }: { stopIndex: number }) => {
-    if (hasMore && stopIndex >= songs.length - 3 && !loading) {
+    if (hasMore && stopIndex >= songs.length - 3) {
       loadMore();
     }
   };

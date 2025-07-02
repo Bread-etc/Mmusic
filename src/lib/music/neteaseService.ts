@@ -10,7 +10,7 @@ export function generateKey() {
     method: "GET",
     params: {},
     platform: "netease",
-    showLoading: false,
+    showLoading: true,
     showError: true,
   });
 }
@@ -23,6 +23,7 @@ export function generateQrCode(uniKey: string) {
   return httpRequest({
     url: "/login/qr/create",
     method: "GET",
+    platform: "netease",
     params: { key: uniKey },
     showLoading: true,
     showError: true,
