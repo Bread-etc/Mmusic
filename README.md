@@ -1,16 +1,16 @@
-# Mmusic🎵 开发
+# Mmusic🎵
 
-## 核心功能
+## Core Function
 
-- 在线音乐源播放使用 [网易云、其他（待定）]
-- 本地音乐播放
-- 歌曲列表、搜索、播放控制（播放/暂停/上一首/下一首/进度条/音量）
-- 歌曲详情（歌词、专辑、歌手信息等）
-- 播放列表管理
+- [x] 在线音乐源搜索: 网易云
+- [ ] 其他音乐源搜索：如酷狗、QQ、bilibili
+- [ ] 播放控制（播放/暂停/上一首/下一首/进度条/音量）
+- [ ] 音质控制 (standard/higher/extrahight/lossless)
+- [x] 扫码登录获取 Cookie
+- [ ] 其他平台扫码登录获取 Cookie
+- [x] 浅深色模式切换
 
-## 待改进
+## Improveable Detail Area
 
-- `SongCard`下playerIcon动画，hover动画
-- `SearchList`列表图片
-- 添加其他音源`kugou/qq/migu`
-- 音质修改`higher/extrahigh等等`
+- [] `SongCard`下playerIcon动画，hover动画
+- [] `Sonner/Toast`样式
