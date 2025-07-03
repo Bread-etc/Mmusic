@@ -6,7 +6,7 @@
  * @function setLanguage 切换语言 ❌
  * @function setPlaySpeed 切换播放速度 ❌
  */
-import { Moon, Music2, QrCode, Sun } from "lucide-react";
+import { BrushCleaning, Moon, Music2, QrCode, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Drawer } from "vaul";
 import { Separator } from "@/components/ui/separator";
@@ -109,7 +109,7 @@ function SettingsDrawer() {
 
   const handleLogout = async () => {
     await window.http.setCookie("netease", "");
-    toast.success("已退出登录");
+    toast.success("清除Cookie成功！");
   };
 
   return (
@@ -176,7 +176,7 @@ function SettingsDrawer() {
                 </span>
               </Button>
             </div>
-            {/* 主题设置 */}
+            {/* 扫码登录 */}
             <div className="flex-between">
               <div className="space-y-1">
                 <span className="title-small">网易云音乐登录</span>
@@ -196,6 +196,24 @@ function SettingsDrawer() {
                   </Button>
                 }
               />
+            </div>
+            {/* 退出登录、清除 cookie */}
+            <div className="flex-between">
+              <div className="space-y-1">
+                <span className="title-small">退出登录</span>
+                <div className="text-caption">清除平台Cookie🧹</div>
+              </div>
+              <Button
+                variant="outline"
+                onClick={handleLogout}
+                className="app-region-no-drag rounded-3xl btn-no-border px-4 
+                theme-text hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                <span className="flex-center gap-2">
+                  <BrushCleaning className="h-4 w-4" />
+                  <span className="text-sm font-medium">清除Cookie</span>
+                </span>
+              </Button>
             </div>
           </div>
         </Drawer.Content>
