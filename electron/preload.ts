@@ -35,6 +35,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
   clearStore: () => ipcRenderer.invoke("clearStore"),
 });
 
+// http库对应的 cookie 操作
 contextBridge.exposeInMainWorld("http", {
   request: (config: any) => ipcRenderer.invoke("http:request", config),
   setCookie: (platform: string, cookie: string) =>

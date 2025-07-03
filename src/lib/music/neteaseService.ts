@@ -39,8 +39,9 @@ export function qrCodeCheck(uniKey: string) {
     url: "/login/qr/check",
     method: "GET",
     params: { key: uniKey },
-    showLoading: true,
-    showError: true,
+    platform: "netease",
+    showLoading: false,
+    showError: false,
   });
 }
 
