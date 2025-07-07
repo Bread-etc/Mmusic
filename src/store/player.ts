@@ -1,251 +1,191 @@
-import { NeteaseSongItem } from "@/types/NeteaseTypes";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+// 定义一个标准、与平台无关的歌曲信息接口
+export interface SongInfo {
+  id: string;
+  title: string;
+  artist: string;
+  album: string;
+  cover: string;
+  url: string;
+  duration: number; // 单位：s
+  source?: "netease" | "kugou" | "qq" | "bilibili";
+  originalData?: any; // 选择性保留原始数据
+}
+
+// 定义 Store 状态 以及 Actions 接口
 interface PlayerStore {
-  // 播放列表
-  playlist: NeteaseSongItem[];
+  // 状态
+  playlist: SongInfo[];
   currentIndex: number;
   isPlaying: boolean;
-
-  // 播放模式
-  repeatMode: "none" | "all" | "one";
-  shuffleMode: boolean;
-
-  // 音量控制
-  volume: number;
-  isMuted: boolean;
-
-  // 播放状态
   currentTime: number;
   duration: number;
+  volume: number;
+  isMuted: boolean;
+  repeatMode: "none" | "all" | "one";
+  isShuffled: boolean;
+
+  // 派生状态
+  currentSong: () => SongInfo | undefined;
 
   // Actions
-  setPlaylist: (songs: NeteaseSongItem[]) => void;
-  setCurrentIndex: (index: number) => void;
   play: () => void;
   pause: () => void;
   togglePlay: () => void;
   playNext: () => void;
   playPrev: () => void;
 
-  // 播放模式控制
-  toggleRepeat: () => void;
-  toggleShuffle: () => void;
+  setPlaylist: (songs: SongInfo[], playIndex?: number) => void;
+  playSongNow: (song: SongInfo) => void;
 
-  // 音量控制
-  setVolume: (volume: number) => void;
-  toggleMute: () => void;
-
-  // 时间控制
   setCurrentTime: (time: number) => void;
   setDuration: (duration: number) => void;
 
-  // 播放列表操作
-  addToPlaylist: (song: NeteaseSongItem) => void;
-  removeFromPlaylist: (index: number) => void;
-  clearPlaylist: () => void;
+  setVolume: (volume: number) => void;
+  toggleMute: () => void;
 
-  // 获取下一首、上一首歌曲索引
-  getNextIndex: () => number;
-  getPrevIndex: () => number;
+  toggleRepeat: () => void;
+  toggleShuffle: () => void;
 }
 
+// 创建 Zustand Store
 export const usePlayerStore = create<PlayerStore>()(
   persist(
     (set, get) => ({
       // 初始状态
       playlist: [],
-      currentIndex: 0,
+      currentIndex: -1,
       isPlaying: false,
-      repeatMode: "none",
-      shuffleMode: false,
-      volume: 1,
-      isMuted: false,
       currentTime: 0,
       duration: 0,
+      volume: 0.8,
+      isMuted: false,
+      repeatMode: "none",
+      isShuffled: false,
 
-      // 设置播放列表
-      setPlaylist: (songs) => {
-        set({
-          playlist: songs,
-          currentIndex: 0,
-        });
+      // --- 派生状态 ---
+      currentSong: () => {
+        const { playlist, currentIndex } = get();
+        return playlist[currentIndex];
       },
 
-      // 设置当前播放索引
-      setCurrentIndex: (index) => {
-        const { playlist } = get();
-        if (index >= 0 && index < playlist.length) {
-          set({ currentIndex: index });
+      // --- 基础播放控制 ---
+      play: () => set({ isPlaying: true }),
+      pause: () => set({ isPlaying: false }),
+      togglePlay: () => {
+        const { playlist, isPlaying } = get();
+        if (playlist.length > 0) {
+          set({ isPlaying: !isPlaying });
         }
       },
 
-      // 播放
-      play: () => {
-        set({ isPlaying: true });
+      // --- 核心播放逻辑 ---
+      playSongNow: (song) => {
+        set((state) => {
+          const existingIndex = state.playlist.findIndex(
+            (s) => s.id === song.id
+          );
+          if (existingIndex !== -1) {
+            // 如果歌曲已在该列表，直接切换到该歌曲
+            return {
+              currentIndex: existingIndex,
+              isPlaying: true,
+              currentTime: 0,
+            };
+          } else {
+            // 新歌
+            const newPlaylist = [
+              ...state.playlist.slice(0, state.currentIndex + 1),
+              song,
+              ...state.playlist.slice(state.currentIndex + 1),
+            ];
+            return {
+              playlist: newPlaylist,
+              currentIndex: state.currentIndex + 1,
+              isPlaying: true,
+              currentTime: 0,
+            };
+          }
+        });
       },
 
-      // 暂停
-      pause: () => {
-        set({ isPlaying: false });
+      setPlaylist: (songs, playIndex = 0) => {
+        set({
+          playlist: songs,
+          currentIndex: playIndex,
+          isPlaying: songs.length > 0,
+          currentTime: 0,
+        });
       },
 
-      // 切换播放/暂停
-      togglePlay: () => {
-        set((state) => ({ isPlaying: !state.isPlaying }));
-      },
-
-      // 下一首
+      // --- 歌曲切换 ---
       playNext: () => {
-        const { getNextIndex } = get();
-        const nextIndex = getNextIndex();
-        set({ currentIndex: nextIndex, isPlaying: true });
-      },
+        const { playlist, currentIndex, repeatMode, isShuffled } = get();
+        if (playlist.length === 0) return;
 
-      // 上一首
+        if (repeatMode === "one") {
+          set({ currentTime: 0, isPlaying: true });
+          return;
+        }
+
+        if (isShuffled) {
+          const nextIndex = Math.floor(Math.random() * playlist.length);
+          set({ currentIndex: nextIndex, currentTime: 0, isPlaying: true });
+          return;
+        }
+
+        const nextIndex = currentIndex + 1;
+        if (nextIndex < playlist.length) {
+          set({ currentIndex: nextIndex, currentTime: 0, isPlaying: true });
+        } else if (repeatMode === "all") {
+          set({ currentIndex: 0, currentTime: 0, isPlaying: true });
+        }
+      },
       playPrev: () => {
-        const { getPrevIndex } = get();
-        const prevIndex = getPrevIndex();
-        set({ currentIndex: prevIndex, isPlaying: true });
+        const { playlist, currentIndex } = get();
+        if (playlist.length === 0) return;
+
+        const prevIndex = currentIndex - 1;
+        if (prevIndex >= 0) {
+          set({ currentIndex: prevIndex, currentTime: 0, isPlaying: true });
+        }
       },
 
-      // 切换重复模式
+      // --- 播放器设置 ---
+      setCurrentTime: (time) => set({ currentTime: time }),
+      setDuration: (duration) => set({ duration }),
+
+      setVolume: (volume) => {
+        const newVolume = Math.max(0, Math.min(1, volume));
+        set({ volume: newVolume, isMuted: newVolume === 0 });
+      },
+
+      toggleMute: () => {
+        set((state) => ({ isMuted: !state.isMuted }));
+      },
+
       toggleRepeat: () => {
         set((state) => {
-          const modes: ("none" | "all" | "one")[] = ["none", "all", "one"];
+          const modes: ("none" | "one" | "all")[] = ["none", "all", "one"];
           const currentModeIndex = modes.indexOf(state.repeatMode);
           const nextMode = modes[(currentModeIndex + 1) % modes.length];
           return { repeatMode: nextMode };
         });
       },
 
-      // 切换随机播放
       toggleShuffle: () => {
-        set((state) => ({ shuffleMode: !state.shuffleMode }));
-      },
-
-      // 设置音量
-      setVolume: (volume) => {
-        const clampedVolume = Math.max(0, Math.min(1, volume));
-        set({ volume: clampedVolume, isMuted: clampedVolume === 0 });
-      },
-
-      // 切换静音
-      toggleMute: () => {
-        set((state) => ({ isMuted: !state.isMuted }));
-      },
-
-      // 设置当前播放时间
-      setCurrentTime: (time) => {
-        set({ currentTime: time });
-      },
-
-      // 设置歌曲总时长
-      setDuration: (duration) => {
-        set({ duration: duration });
-      },
-
-      // 添加到播放列表
-      addToPlaylist: (song) => {
-        set((state) => ({
-          playlist: [...state.playlist, song],
-        }));
-      },
-
-      // 从播放列表移除
-      removeFromPlaylist: (index) => {
-        set((state) => {
-          const newPlaylist = state.playlist.filter((_, i) => i !== index);
-          let newCurrentIndex = state.currentIndex;
-
-          if (index < state.currentIndex) {
-            newCurrentIndex = state.currentIndex - 1;
-          } else if (index === state.currentIndex) {
-            newCurrentIndex = Math.min(
-              state.currentIndex,
-              newPlaylist.length - 1
-            );
-          }
-
-          return {
-            playlist: newPlaylist,
-            currentIndex: Math.max(0, newCurrentIndex),
-          };
-        });
-      },
-
-      // 清空播放列表
-      clearPlaylist: () => {
-        set({
-          playlist: [],
-          currentIndex: 0,
-          isPlaying: false,
-          currentTime: 0,
-          duration: 0,
-        });
-      },
-
-      // 获取下一首歌曲索引
-      getNextIndex: () => {
-        const { playlist, currentIndex, repeatMode, shuffleMode } = get();
-
-        if (playlist.length === 0) return 0;
-
-        if (repeatMode === "one") return currentIndex;
-
-        if (shuffleMode) {
-          // 随机播放逻辑
-          let nextIndex;
-          do {
-            nextIndex = Math.floor(Math.random() * playlist.length);
-          } while (nextIndex === currentIndex && playlist.length > 1);
-          return nextIndex;
-        }
-
-        // 顺序播放
-        if (currentIndex < playlist.length - 1) {
-          return currentIndex + 1;
-        } else {
-          return repeatMode === "all" ? 0 : currentIndex;
-        }
-      },
-
-      // 获取上一首歌曲索引
-      getPrevIndex: () => {
-        const { playlist, currentIndex, repeatMode, shuffleMode } = get();
-
-        if (playlist.length === 0) return 0;
-
-        if (repeatMode === "one") {
-          return currentIndex;
-        }
-
-        if (shuffleMode) {
-          // 随机播放逻辑
-          let prevIndex;
-          do {
-            prevIndex = Math.floor(Math.random() * playlist.length);
-          } while (prevIndex === currentIndex && playlist.length > 1);
-          return prevIndex;
-        }
-
-        // 顺序播放
-        if (currentIndex > 0) {
-          return currentIndex - 1;
-        } else {
-          return repeatMode === "all" ? playlist.length - 1 : currentIndex;
-        }
+        set((state) => ({ isShuffled: !state.isShuffled }));
       },
     }),
     {
-      name: "player-store",
-      // 只持久化部分状态
+      name: "mmusic-player-storage", // 持久化存储键名
       partialize: (state) => ({
-        repeatMode: state.repeatMode,
-        shuffleMode: state.shuffleMode,
         volume: state.volume,
         isMuted: state.isMuted,
+        repeatMode: state.repeatMode,
+        isShuffled: state.isShuffled,
       }),
     }
   )
