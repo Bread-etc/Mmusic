@@ -12,5 +12,5 @@
 
 ## Improveable Detail Area
 
-- [] `SongCard`下playerIcon动画，hover动画
-- [] `Sonner/Toast`样式
+- [ ] `SongCard`下playerIcon动画，hover动画
+- [ ] `Sonner/Toast`样式
