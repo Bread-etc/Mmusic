@@ -1,60 +1,117 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-// 定义一个标准、与平台无关的歌曲信息接口
 export interface SongInfo {
+  /**
+   * 歌曲的唯一标识。
+   * @description 为确保跨平台唯一性，建议使用 'platform-songId' 的格式，例如 'netease-123456'。
+   */
   id: string;
+  /** 歌曲标题 */
   title: string;
+  /** 艺术家/歌手名 */
   artist: string;
+  /** 专辑名 */
   album: string;
+  /** 专辑封面 URL */
   cover: string;
+  /** 音频播放 URL */
   url: string;
-  duration: number; // 单位：s
+  /** 歌曲时长（单位：秒） */
+  duration: number;
+  /** 音乐来源平台 */
   source?: "netease" | "kugou" | "qq" | "bilibili";
-  originalData?: any; // 选择性保留原始数据
+  /** 可选，用于存储从API获取的原始数据，方便调试或特殊用途 */
+  originalData?: any;
 }
 
-// 定义 Store 状态 以及 Actions 接口
+/**
+ * 定义播放器 Store 的状态和 Actions 接口
+ */
 interface PlayerStore {
-  // 状态
+  /** 当前播放列表 */
   playlist: SongInfo[];
+  /** 当前播放歌曲在播放列表中的索引 */
   currentIndex: number;
+  /** 是否正在播放 */
   isPlaying: boolean;
+  /** 当前播放进度（单位：秒） */
   currentTime: number;
+  /** 当前歌曲总时长（单位：秒） */
   duration: number;
+  /** 音量（0 到 1） */
   volume: number;
+  /** 是否静音 */
   isMuted: boolean;
+  /** 循环模式: 'none' (不循环), 'all' (列表循环), 'one' (单曲循环) */
   repeatMode: "none" | "all" | "one";
+  /** 是否随机播放 */
   isShuffled: boolean;
 
-  // 派生状态
+  /**
+   * 获取当前正在播放的歌曲信息。
+   * @returns {SongInfo | undefined} 当前歌曲对象，如果播放列表为空则返回 undefined。
+   */
   currentSong: () => SongInfo | undefined;
 
-  // Actions
+  /** 开始或恢复播放 */
   play: () => void;
+  /** 暂停播放 */
   pause: () => void;
+  /** 切换播放/暂停状态 */
   togglePlay: () => void;
+
+  /** 播放下一首 */
   playNext: () => void;
+  /** 播放上一首 */
   playPrev: () => void;
 
+  /**
+   * 设置新的播放列表并立即播放。
+   * @param songs 新的歌曲列表
+   * @param playIndex 从新列表的哪个索引开始播放，默认为 0
+   */
   setPlaylist: (songs: SongInfo[], playIndex?: number) => void;
+
+  /**
+   * 立即播放一首指定的歌曲。
+   * @description 如果歌曲已在列表中，则跳转到该歌曲；如果不在，则将其插入到当前歌曲之后并播放。
+   * @param song 要播放的歌曲
+   */
   playSongNow: (song: SongInfo) => void;
 
+  /**
+   * 设置当前播放进度。
+   * @param time 新的播放进度（秒）
+   */
   setCurrentTime: (time: number) => void;
+  /**
+   * 设置当前歌曲的总时长。
+   * @param duration 总时长（秒）
+   */
   setDuration: (duration: number) => void;
 
+  /**
+   * 设置音量。
+   * @param volume 新的音量值（0 到 1）
+   */
   setVolume: (volume: number) => void;
+  /** 切换静音状态 */
   toggleMute: () => void;
 
+  /** 切换循环模式 */
   toggleRepeat: () => void;
+  /** 切换随机播放模式 */
   toggleShuffle: () => void;
 }
 
-// 创建 Zustand Store
+// 创建 Zustand Store，并使用 persist 中间件进行持久化存储
 export const usePlayerStore = create<PlayerStore>()(
   persist(
     (set, get) => ({
+      // ------------------
       // 初始状态
+      // ------------------
       playlist: [],
       currentIndex: -1,
       isPlaying: false,
@@ -65,13 +122,17 @@ export const usePlayerStore = create<PlayerStore>()(
       repeatMode: "none",
       isShuffled: false,
 
-      // --- 派生状态 ---
+      // ------------------
+      // 派生状态
+      // ------------------
       currentSong: () => {
         const { playlist, currentIndex } = get();
         return playlist[currentIndex];
       },
 
-      // --- 基础播放控制 ---
+      // ------------------
+      // Actions 实现
+      // ------------------
       play: () => set({ isPlaying: true }),
       pause: () => set({ isPlaying: false }),
       togglePlay: () => {
@@ -81,21 +142,20 @@ export const usePlayerStore = create<PlayerStore>()(
         }
       },
 
-      // --- 核心播放逻辑 ---
       playSongNow: (song) => {
         set((state) => {
           const existingIndex = state.playlist.findIndex(
             (s) => s.id === song.id
           );
           if (existingIndex !== -1) {
-            // 如果歌曲已在该列表，直接切换到该歌曲
+            // 如果歌曲已在列表中，直接切换到该歌曲
             return {
               currentIndex: existingIndex,
               isPlaying: true,
               currentTime: 0,
             };
           } else {
-            // 新歌
+            // 如果是新歌，则插入到当前播放歌曲的后面
             const newPlaylist = [
               ...state.playlist.slice(0, state.currentIndex + 1),
               song,
@@ -120,29 +180,33 @@ export const usePlayerStore = create<PlayerStore>()(
         });
       },
 
-      // --- 歌曲切换 ---
       playNext: () => {
         const { playlist, currentIndex, repeatMode, isShuffled } = get();
         if (playlist.length === 0) return;
 
+        // 单曲循环模式
         if (repeatMode === "one") {
           set({ currentTime: 0, isPlaying: true });
           return;
         }
 
+        // 随机播放模式
         if (isShuffled) {
           const nextIndex = Math.floor(Math.random() * playlist.length);
           set({ currentIndex: nextIndex, currentTime: 0, isPlaying: true });
           return;
         }
 
+        // 顺序播放
         const nextIndex = currentIndex + 1;
         if (nextIndex < playlist.length) {
           set({ currentIndex: nextIndex, currentTime: 0, isPlaying: true });
         } else if (repeatMode === "all") {
+          // 列表循环
           set({ currentIndex: 0, currentTime: 0, isPlaying: true });
         }
       },
+
       playPrev: () => {
         const { playlist, currentIndex } = get();
         if (playlist.length === 0) return;
@@ -153,7 +217,6 @@ export const usePlayerStore = create<PlayerStore>()(
         }
       },
 
-      // --- 播放器设置 ---
       setCurrentTime: (time) => set({ currentTime: time }),
       setDuration: (duration) => set({ duration }),
 
@@ -168,7 +231,7 @@ export const usePlayerStore = create<PlayerStore>()(
 
       toggleRepeat: () => {
         set((state) => {
-          const modes: ("none" | "one" | "all")[] = ["none", "all", "one"];
+          const modes: ("none" | "all" | "one")[] = ["none", "all", "one"];
           const currentModeIndex = modes.indexOf(state.repeatMode);
           const nextMode = modes[(currentModeIndex + 1) % modes.length];
           return { repeatMode: nextMode };
@@ -180,7 +243,8 @@ export const usePlayerStore = create<PlayerStore>()(
       },
     }),
     {
-      name: "mmusic-player-storage", // 持久化存储键名
+      name: "mmusic-player-storage", // 持久化存储的键名
+      // 只持久化用户的偏好设置，不存储播放列表和状态
       partialize: (state) => ({
         volume: state.volume,
         isMuted: state.isMuted,
