@@ -2,10 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export interface SongInfo {
-  /**
-   * 歌曲的唯一标识。
-   * @description 为确保跨平台唯一性，建议使用 'platform-songId' 的格式，例如 'netease-123456'。
-   */
+  /** 歌曲的唯一标识 */
   id: string;
   /** 歌曲标题 */
   title: string;
@@ -62,22 +59,17 @@ interface PlayerStore {
    */
   isLiked: (songId: string) => boolean;
 
-  /** 开始或恢复播放 */
   play: () => void;
-  /** 暂停播放 */
   pause: () => void;
-  /** 切换播放/暂停状态 */
   togglePlay: () => void;
 
-  /** 播放下一首 */
   playNext: () => void;
-  /** 播放上一首 */
   playPrev: () => void;
 
   /**
    * 设置新的播放列表并立即播放。
    * @param songs 新的歌曲列表
-   * @param playIndex 从新列表的哪个索引开始播放，默认为 0
+   * @param playIndex 从新列表指定索引开始播放，默认为 0
    */
   setPlaylist: (songs: SongInfo[], playIndex?: number) => void;
 
@@ -104,15 +96,10 @@ interface PlayerStore {
    * @param volume 新的音量值（0 到 1）
    */
   setVolume: (volume: number) => void;
-  /** 切换静音状态 */
+
   toggleMute: () => void;
-
-  /** 切换循环模式 */
   toggleRepeat: () => void;
-  /** 切换随机播放模式 */
   toggleShuffle: () => void;
-
-  /** 切换歌曲喜欢状态 */
   toggleLike: () => void;
 }
 
@@ -190,20 +177,17 @@ export const usePlayerStore = create<PlayerStore>()(
         const { playlist, currentIndex, repeatMode, isShuffled } = get();
         if (playlist.length === 0) return;
 
-        // 单曲循环模式
         if (repeatMode === "one") {
           set({ currentTime: 0, isPlaying: true });
           return;
         }
 
-        // 随机播放模式
         if (isShuffled) {
           const nextIndex = Math.floor(Math.random() * playlist.length);
           set({ currentIndex: nextIndex, currentTime: 0, isPlaying: true });
           return;
         }
 
-        // 顺序播放
         const nextIndex = currentIndex + 1;
         if (nextIndex < playlist.length) {
           set({ currentIndex: nextIndex, currentTime: 0, isPlaying: true });
@@ -211,7 +195,6 @@ export const usePlayerStore = create<PlayerStore>()(
           // 列表循环
           set({ currentIndex: 0, currentTime: 0, isPlaying: true });
         } else {
-          // 如果是最后一首歌且不循环，则暂停
           set({ isPlaying: false });
         }
       },
@@ -250,7 +233,7 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       toggleShuffle: () => set((state) => ({ isShuffled: !state.isShuffled })),
-      
+
       toggleLike: () => {
         const song = get().currentSong();
         if (!song) return;
