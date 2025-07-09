@@ -81,9 +81,15 @@ export const usePlayerStore = create<PlayerStore>()(
 
       playSongNow: (song) => {
         set((state) => {
-          const existingIndex = state.playlist.findIndex((s) => s.id === song.id);
+          const existingIndex = state.playlist.findIndex(
+            (s) => s.id === song.id
+          );
           if (existingIndex !== -1) {
-            return { currentIndex: existingIndex, isPlaying: true, currentTime: 0 };
+            return {
+              currentIndex: existingIndex,
+              isPlaying: true,
+              currentTime: 0,
+            };
           } else {
             const newPlaylist = [
               ...state.playlist.slice(0, state.currentIndex + 1),
@@ -101,7 +107,12 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       setPlaylist: (songs, playIndex = 0) => {
-        set({ playlist: songs, currentIndex: playIndex, isPlaying: songs.length > 0, currentTime: 0 });
+        set({
+          playlist: songs,
+          currentIndex: playIndex,
+          isPlaying: songs.length > 0,
+          currentTime: 0,
+        });
       },
 
       playNext: () => {
@@ -168,7 +179,9 @@ export const usePlayerStore = create<PlayerStore>()(
         set((state) => {
           const isLiked = state.likedSongs.some((s) => s.id === song.id);
           if (isLiked) {
-            return { likedSongs: state.likedSongs.filter((s) => s.id !== song.id) };
+            return {
+              likedSongs: state.likedSongs.filter((s) => s.id !== song.id),
+            };
           } else {
             return { likedSongs: [...state.likedSongs, song] };
           }
