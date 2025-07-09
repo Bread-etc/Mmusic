@@ -1,104 +1,115 @@
-import { Button } from "@/components/ui/button";
-import { Play, Pause } from "lucide-react";
+import { useState } from "react";
+import { Play, Volume2, LoaderCircle } from "lucide-react";
+import { toast } from "sonner";
+
 import { usePlayerStore } from "@/store/player";
-import type { NeteaseSongItem } from "@/types/NeteaseTypes";
+import { NeteaseSongItem } from "@/types/NeteaseTypes";
+import { songUrlNetease } from "@/lib/music/neteaseService";
+import { transformNeteaseSong } from "@/lib/music/utils";
 
 interface SongCardProps {
   index: number;
   song: NeteaseSongItem;
-  platform: "netease";
 }
 
-function SongCard({ index, song }: SongCardProps) {
-  const {
-    playlist,
-    currentIndex,
-    isPlaying,
-    setCurrentIndex,
-    play
-  } = usePlayerStore();
+// 时间格式化工具函数
+const formatDuration = (seconds: number): string => {
+  if (isNaN(seconds) || seconds < 0) return "00:00";
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+};
 
-  /**
-   * 计算播放时间格式化
-   * @param duration 时长(ms)
-   * @returns 格式化的时间字符串
-   */
-  const calcPlayTime = (duration: number): string => {
-    let time = Math.floor(duration / 1000);
-    let second = time % 60;
-    let min = (time - second) / 60;
-    return `${String(min).padStart(2, "0")}:${String(second).padEnd(2, "0")}`;
+export function SongCard({ song, index }: SongCardProps) {
+  const [isFetchingUrl, setIsFetchingUrl] = useState(false);
+
+  const {
+    currentSong,
+    isPlaying,
+    playSongNow,
+    togglePlay,
+  } = usePlayerStore((state) => ({
+    currentSong: state.currentSong(),
+    isPlaying: state.isPlaying,
+    playSongNow: state.playSongNow,
+    togglePlay: state.togglePlay,
+  }));
+
+  const songInfo = transformNeteaseSong(song);
+  const isCurrentSong = currentSong?.id === songInfo.id;
+
+  const handlePlay = async () => {
+    // 如果点击的是当前正在播放的歌曲，则切换播放/暂停状态
+    if (isCurrentSong) {
+      togglePlay();
+      return;
+    }
+
+    setIsFetchingUrl(true);
+    try {
+      const res = await songUrlNetease(song.id.toString(), "standard");
+      const songUrlData = res.data.data[0];
+
+      if (!songUrlData || !songUrlData.url) {
+        toast.error("获取播放地址失败，可能需要VIP权限");
+        return;
+      }
+
+      const playableSong = { ...songInfo, url: songUrlData.url };
+      playSongNow(playableSong);
+    } catch (error) {
+      console.error("播放歌曲时出错:", error);
+      toast.error("播放失败，请检查网络或稍后再试");
+    } finally {
+      setIsFetchingUrl(false);
+    }
   };
 
-  /**
-   * 处理播放按钮点击
-   * 如果是当前歌曲且正在播放，则暂停
-   * 如果是其他歌曲或当前歌曲未播放，则播放
-   */
-  const handlePlayClick = () => {
-    const isCurrentSong = playlist[currentIndex]?.id === song.id;
-
-    if (isCurrentSong && isPlaying) {
-      play();
-    } else {
-      if (!isCurrentSong) {
-        setCurrentIndex(index);
-      }
-      play();
-    }
-  }
-
-  const isCurrentSong = playlist[currentIndex]?.id === song.id;
-  const showPauseIcon = isCurrentSong && isPlaying;
-
   return (
-    <div className="h-full flex items-center px-6 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-200">
-      {/* 序号 */}
-      <div className="title-small w-6 font-bold">
-        {isCurrentSong && isPlaying ? (
-          <div className="flex items-center justify-center">
-            <div className="flex space-x-1">
-              <div className="w-1 h-3 bg-blue-500 animate-pulse"></div>
-              <div className="w-1 h-2 bg-blue-500 animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-              <div className="w-1 h-4 bg-blue-500 animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-            </div>
-          </div>
-        ) : (index + 1)}
-      </div>
-
-      {/* 歌曲信息 */}
-      <div className="flex-1 flex flex-col justify-center ml-4">
-        <span className={`text-lg font-bold truncate ${isCurrentSong ? 'text-blue-500' : 'theme-text'
-          }`}>
-          {song.name}
-        </span>
-        <span className={`text-caption ${isCurrentSong ? 'text-blue-400' : ''
-          }`}>
-          {song.artists.map((artist) => artist.name).join(", ")}
-        </span>
-      </div>
-
-      {/* 歌曲时长 */}
-      <div className="text-caption mr-4">{calcPlayTime(song.duration)}</div>
-
-      {/* 播放按钮 */}
-      <Button
-        size="icon"
-        variant="outline"
-        className={`h-10 w-10 rounded-full btn-no-border transition-all duration-200 ${isCurrentSong
-          ? 'bg-blue-500 hover:bg-blue-600 text-white border-blue-500'
-          : 'theme-text hover:bg-gray-100 dark:hover:bg-gray-700'
-          }`}
-        onClick={handlePlayClick}
-      >
-        {showPauseIcon ? (
-          <Pause className="h-4 w-4" />
+    <div
+      className={`group flex items-center p-2 rounded-lg cursor-pointer transition-colors duration-200 ${
+        isCurrentSong
+          ? "bg-sky-100 dark:bg-sky-900/50"
+          : "hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
+      }`}
+      onClick={handlePlay}
+    >
+      {/* 左侧：索引或播放/加载图标 */}
+      <div className="w-10 flex-center text-sm theme-text opacity-60">
+        {isFetchingUrl ? (
+          <LoaderCircle className="w-5 h-5 animate-spin text-sky-500" />
+        ) : isCurrentSong && isPlaying ? (
+          <Volume2 className="w-5 h-5 text-sky-500" />
         ) : (
-          <Play className="h-4 w-4" />
+          // 默认显示索引，当鼠标悬浮时隐藏
+          <span className="group-hover:hidden">{index + 1}</span>
         )}
-      </Button>
+        {/* 鼠标悬浮时显示播放按钮 (如果不是加载中或正在播放) */}
+        <Play
+          className={`w-5 h-5 hidden group-hover:block theme-text opacity-80${
+            isFetchingUrl || (isCurrentSong && isPlaying) ? " !hidden" : ""
+          }`}
+        />
+      </div>
+
+      {/* 中部：歌曲信息 */}
+      <div className="flex-1 min-w-0 mx-2">
+        <p
+          className={`font-medium truncate ${
+            isCurrentSong ? "text-sky-600 dark:text-sky-400" : "theme-text"
+          }`}
+        >
+          {songInfo.title}
+        </p>
+        <p className="text-sm theme-text opacity-70 truncate">
+          {songInfo.artist}
+        </p>
+      </div>
+
+      {/* 右侧：歌曲时长 */}
+      <div className="w-16 text-right text-sm theme-text opacity-70">
+        {formatDuration(songInfo.duration)}
+      </div>
     </div>
   );
 }
-
-export default SongCard;
