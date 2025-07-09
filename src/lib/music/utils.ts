@@ -4,8 +4,8 @@ import { SongInfo } from "@/store/player";
 /**
  * 将网易云的歌曲数据 (`NeteaseSongItem`) 转换为应用内部统一的 `SongInfo` 格式。
  *
- * @param neteaseSong 从网易云 API 获取的原始歌曲对象。
- * @returns {SongInfo} 转换后的、标准化的歌曲对象。
+ * @param neteaseSong 网易云原始歌曲对象。
+ * @returns {SongInfo} 标准化的歌曲对象。
  */
 export function transformNeteaseSong(neteaseSong: NeteaseSongItem): SongInfo {
   // 从 ar 或 artists 中提取歌手名，兼容搜索结果和歌曲详情
@@ -16,7 +16,7 @@ export function transformNeteaseSong(neteaseSong: NeteaseSongItem): SongInfo {
   // 从 al 或 album 中提取专辑信息
   const album = neteaseSong.al || neteaseSong.album;
 
-  // 从 dt 或 duration 中提取时长（API提供的是毫秒，需转换为秒）
+  // 从 dt 或 duration 中提取时长
   const duration = (neteaseSong.dt || neteaseSong.duration || 0) / 1000;
 
   return {
@@ -24,7 +24,7 @@ export function transformNeteaseSong(neteaseSong: NeteaseSongItem): SongInfo {
     title: neteaseSong.name || "未知歌曲",
     artist: artists || "未知艺术家",
     album: album?.name || "未知专辑",
-    cover: `${album?.picUrl}?param=130y130` || "",
+    cover: album?.picUrl || "",
     url: "",
     duration: duration,
     source: "netease",
