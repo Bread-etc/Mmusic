@@ -13,11 +13,11 @@ export interface SongInfo {
   originalData?: any;
 }
 
-// 定义播放模式的类型
 export type PlaybackMode = "list" | "single" | "shuffle";
 
 interface PlayerStore {
   playlist: SongInfo[];
+  shuffledPlaylist: SongInfo[];
   currentIndex: number;
   isPlaying: boolean;
   currentTime: number;
@@ -25,7 +25,6 @@ interface PlayerStore {
   volume: number;
   isMuted: boolean;
   likedSongs: SongInfo[];
-
   playbackMode: PlaybackMode;
 
   currentSong: () => SongInfo | undefined;
@@ -51,10 +50,21 @@ interface PlayerStore {
   toggleLike: () => void;
 }
 
+// 洗牌算法 (Fisher-Yates shuffle)
+const shuffleArray = <T>(array: T[]): T[] => {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+};
+
 export const usePlayerStore = create<PlayerStore>()(
   persist(
     (set, get) => ({
       playlist: [],
+      shuffledPlaylist: [],
       currentIndex: -1,
       isPlaying: false,
       currentTime: 0,
@@ -62,11 +72,14 @@ export const usePlayerStore = create<PlayerStore>()(
       volume: 0.8,
       isMuted: false,
       likedSongs: [],
-      playbackMode: "list", // 默认模式为列表循环
+      playbackMode: "list",
 
       currentSong: () => {
-        const { playlist, currentIndex } = get();
-        return playlist[currentIndex];
+        const { playlist, shuffledPlaylist, currentIndex, playbackMode } =
+          get();
+        const currentPlaylist =
+          playbackMode === "shuffle" ? shuffledPlaylist : playlist;
+        return currentPlaylist[currentIndex];
       },
       isLiked: (songId) => get().likedSongs.some((s) => s.id === songId),
 
@@ -81,9 +94,14 @@ export const usePlayerStore = create<PlayerStore>()(
 
       playSongNow: (song) => {
         set((state) => {
-          const existingIndex = state.playlist.findIndex(
+          const currentPlaylist =
+            state.playbackMode === "shuffle"
+              ? state.shuffledPlaylist
+              : state.playlist;
+          const existingIndex = currentPlaylist.findIndex(
             (s) => s.id === song.id
           );
+
           if (existingIndex !== -1) {
             return {
               currentIndex: existingIndex,
@@ -91,14 +109,15 @@ export const usePlayerStore = create<PlayerStore>()(
               currentTime: 0,
             };
           } else {
-            const newPlaylist = [
-              ...state.playlist.slice(0, state.currentIndex + 1),
-              song,
-              ...state.playlist.slice(state.currentIndex + 1),
-            ];
+            const newPlaylist = [...state.playlist, song];
+            const newShuffledPlaylist = shuffleArray(newPlaylist);
             return {
               playlist: newPlaylist,
-              currentIndex: state.currentIndex + 1,
+              shuffledPlaylist: newShuffledPlaylist,
+              currentIndex:
+                state.playbackMode === "shuffle"
+                  ? newShuffledPlaylist.findIndex((s) => s.id === song.id)
+                  : newPlaylist.length - 1,
               isPlaying: true,
               currentTime: 0,
             };
@@ -107,50 +126,50 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       setPlaylist: (songs, playIndex = 0) => {
+        // 利用 Map 的特性根据歌曲ID进行去重
+        const uniqueSongs = Array.from(new Map(songs.map(song => [song.id, song])).values());
+
+        const newShuffledPlaylist = shuffleArray(uniqueSongs);
         set({
-          playlist: songs,
+          playlist: uniqueSongs,
+          shuffledPlaylist: newShuffledPlaylist,
           currentIndex: playIndex,
-          isPlaying: songs.length > 0,
+          isPlaying: uniqueSongs.length > 0,
           currentTime: 0,
         });
       },
 
       playNext: () => {
-        const { playlist, currentIndex, playbackMode } = get();
-        if (playlist.length === 0) return;
+        const { playlist, shuffledPlaylist, currentIndex, playbackMode } =
+          get();
+        const currentPlaylist =
+          playbackMode === "shuffle" ? shuffledPlaylist : playlist;
+        if (currentPlaylist.length === 0) return;
 
         if (playbackMode === "single") {
           set({ currentTime: 0, isPlaying: true });
           return;
         }
 
-        if (playbackMode === "shuffle") {
-          const nextIndex = Math.floor(Math.random() * playlist.length);
-          set({ currentIndex: nextIndex, currentTime: 0, isPlaying: true });
-          return;
-        }
-
-        // 默认 "list" 模式
         const nextIndex = currentIndex + 1;
-        if (nextIndex < playlist.length) {
+        if (nextIndex < currentPlaylist.length) {
           set({ currentIndex: nextIndex, currentTime: 0, isPlaying: true });
         } else {
-          // 列表循环
           set({ currentIndex: 0, currentTime: 0, isPlaying: true });
         }
       },
 
       playPrev: () => {
-        const { playlist, currentIndex, currentTime } = get();
-        if (playlist.length === 0) return;
+        const { playlist, shuffledPlaylist, currentIndex, playbackMode } = get();
+        const currentPlaylist = playbackMode === "shuffle" ? shuffledPlaylist : playlist;
+        if (currentPlaylist.length === 0) return;
 
-        if (currentTime > 3) {
-          set({ currentTime: 0 });
+        const prevIndex = currentIndex - 1;
+        if (prevIndex >= 0) {
+          set({ currentIndex: prevIndex, currentTime: 0, isPlaying: true });
         } else {
-          const prevIndex = currentIndex - 1;
-          if (prevIndex >= 0) {
-            set({ currentIndex: prevIndex, currentTime: 0, isPlaying: true });
-          }
+          // 如果是第一首，则循环到列表的最后一首
+          set({ currentIndex: currentPlaylist.length - 1, currentTime: 0, isPlaying: true });
         }
       },
 
@@ -169,7 +188,33 @@ export const usePlayerStore = create<PlayerStore>()(
           const modes: PlaybackMode[] = ["list", "single", "shuffle"];
           const currentModeIndex = modes.indexOf(state.playbackMode);
           const nextMode = modes[(currentModeIndex + 1) % modes.length];
-          return { playbackMode: nextMode };
+
+          if (nextMode === "shuffle") {
+            const shuffled = shuffleArray(state.playlist);
+            // 切换到随机模式时，保持当前歌曲仍在播放
+            const currentSongId = state.playlist[state.currentIndex]?.id;
+            const newIndex = shuffled.findIndex((s) => s.id === currentSongId);
+            return {
+              playbackMode: nextMode,
+              shuffledPlaylist: shuffled,
+              currentIndex: newIndex >= 0 ? newIndex : 0,
+            };
+          } else {
+            // 从随机模式切回时，恢复正确的索引
+            if (state.playbackMode === "shuffle") {
+              const currentSongId =
+                state.shuffledPlaylist[state.currentIndex]?.id;
+              const newIndex = state.playlist.findIndex(
+                (s) => s.id === currentSongId
+              );
+              return {
+                playbackMode: nextMode,
+                shuffledPlaylist: [],
+                currentIndex: newIndex >= 0 ? newIndex : 0,
+              };
+            }
+            return { playbackMode: nextMode, shuffledPlaylist: [] };
+          }
         });
       },
 
