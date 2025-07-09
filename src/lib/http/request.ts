@@ -6,6 +6,15 @@ const { setLoading } = useLoadingStore.getState();
 
 export async function httpRequest<T = any>(config: RequestConfig): Promise<T> {
   if (config.showLoading) setLoading(true);
+
+  // 如果是网易云音乐的请求，自动附加cookie
+  if (config.platform === "netease") {
+    const cookie = await window.http.getCookie("netease");
+    if (cookie) {
+      config.params = { ...config.params, cookie };
+    }
+  }
+
   try {
     const res = await window.http.request(config);
     if (!res.success && config.showError !== false) {
