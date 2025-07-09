@@ -1,111 +1,130 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { AutoSizer, List, ListRowProps } from "react-virtualized";
+import { toast } from "sonner";
+
 import { useSearchResultStore } from "@/store/searchResult";
-import SongCard from "./SongCard";
-import { AutoSizer, List } from "react-virtualized";
-import "react-virtualized/styles.css";
 import { searchNetease } from "@/lib/music/neteaseService";
 import { NeteaseSongItem } from "@/types/NeteaseTypes";
+import { SongCard } from "./SongCard";
+
+import "react-virtualized/styles.css"; // 引入虚拟列表样式
 
 function MainContent() {
   const { keyword } = useSearchResultStore();
   const [songs, setSongs] = useState<NeteaseSongItem[]>([]);
-  const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const totalCount = useRef(0);
-  const listRef = useRef<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // 关键词变化时，重置分页和数据
+  // 使用 useRef 来确保在异步加载中总能拿到最新的 keyword
+  const keywordRef = useRef(keyword);
+  keywordRef.current = keyword;
+
+  // 使用 useRef 来避免重复加载
+  const isLoadingRef = useRef(false);
+
+  // 当关键词变化时，重置所有状态并进行首次搜索
   useEffect(() => {
-    if (!keyword) {
-      setSongs([]);
-      setPage(0);
-      setHasMore(true);
-      totalCount.current = 0;
-      return;
-    }
-    if (listRef.current) {
-      listRef.current.scrollToRow(0);
-    }
-    // 首次加载
-    (async () => {
-      const res = await searchNetease(keyword, 0);
-      if (res.success) {
-        setSongs(res.data.result.songs);
-        totalCount.current = res.data.result.songCount;
-        setHasMore(res.data.result.songs.length < res.data.result.songCount);
-        setPage(0);
-      } else {
+    const performSearch = async () => {
+      if (!keyword) {
         setSongs([]);
-        setHasMore(false);
-        totalCount.current = 0;
+        setHasMore(true);
+        setError(null);
+        return;
       }
-    })();
+
+      setIsLoading(true);
+      isLoadingRef.current = true;
+      setError(null);
+
+      try {
+        const res = await searchNetease(keyword, 0);
+        // 检查搜索结果是否仍然对应当前关键词
+        if (keywordRef.current === keyword) {
+          const result = res.data.result;
+          setSongs(result.songs || []);
+          setHasMore(result.hasMore ?? false);
+          if (!result.songs || result.songs.length === 0) {
+            setError("没有找到相关的歌曲");
+          }
+        }
+      } catch (err) {
+        toast.error("搜索失败，请检查网络连接");
+        setError("搜索出错了");
+      } finally {
+        setIsLoading(false);
+        isLoadingRef.current = false;
+      }
+    };
+
+    performSearch();
   }, [keyword]);
 
-  // 加载下一页
-  const loadMore = async () => {
-    if (!hasMore) return;
-    const nextPage = page + 1;
-    const offset = nextPage * 30;
-    const res = await searchNetease(keyword, offset);
-    if (res.success && res.data.result.songs.length > 0) {
-      setSongs((prev) => [...prev, ...res.data.result.songs]);
-      setPage(nextPage);
-      setHasMore(
-        songs.length + res.data.result.songs.length < totalCount.current
-      );
-    } else {
-      setHasMore(false);
+  // 加载更多歌曲
+  const loadMoreRows = async () => {
+    if (isLoadingRef.current || !hasMore || !keyword) return;
+
+    isLoadingRef.current = true;
+
+    try {
+      const offset = songs.length;
+      const res = await searchNetease(keyword, offset);
+      const result = res.data.result;
+      setSongs((prevSongs) => [...prevSongs, ...(result.songs || [])]);
+      setHasMore(result.hasMore ?? false);
+    } catch (err) {
+      toast.error("加载更多失败");
+    } finally {
+      isLoadingRef.current = false;
     }
   };
 
-  // 虚拟列表渲染
-  const rowRenderer = ({ index, key, style }: any) => {
-    const item = songs[index];
+  // 渲染列表中的每一行
+  const rowRenderer = ({ index, key, style }: ListRowProps) => {
+    const song = songs[index];
     return (
-      <div key={key} style={style} className="app-region-no-drag">
-        <SongCard index={index} song={item} platform="netease" />
+      <div key={key} style={style} className="app-region-no-drag px-2">
+        <SongCard index={index} song={song} />
       </div>
     );
   };
 
-  // 监听滚动到底部，滚动到最后 3 行时加载更多
-  const handleRowsRendered = ({ stopIndex }: { stopIndex: number }) => {
-    if (hasMore && stopIndex >= songs.length - 3) {
-      loadMore();
+  // 根据不同状态显示不同内容
+  const renderContent = () => {
+    if (isLoading && songs.length === 0) {
+      return <div className="flex-center h-full title-small opacity-50">正在努力搜索...</div>;
     }
-  };
-
-  if (!keyword) {
-    return (
-      <div className="flex-center h-[75%] w-full">
-        <div className="title-small text-center">搜索你喜欢的音乐</div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="h-[75%] w-full">
-      <AutoSizer>
-        {({ width, height }: { width: number; height: number }) => {
-          const visibleRows = Math.max(1, Math.min(songs.length, 6));
-          const rowHeight = Math.max(60, Math.floor(height / visibleRows));
-          return (
+    if (error) {
+      return <div className="flex-center h-full title-small opacity-50">{error}</div>;
+    }
+    if (!keyword) {
+      return <div className="flex-center h-full title-small opacity-50">搜索你喜欢的音乐</div>;
+    }
+    if (songs.length > 0) {
+      return (
+        <AutoSizer>
+          {({ width, height }) => (
             <List
-              ref={listRef}
               width={width}
               height={height}
               rowCount={songs.length}
-              rowHeight={rowHeight}
-              overscanRowCount={2}
+              rowHeight={64} // 固定行高，提升性能
               rowRenderer={rowRenderer}
-              onRowsRendered={handleRowsRendered}
+              onRowsRendered={({ stopIndex }) => {
+                if (hasMore && stopIndex >= songs.length - 5) {
+                  loadMoreRows();
+                }
+              }}
+              overscanRowCount={5}
             />
-          );
-        }}
-      </AutoSizer>
-    </div>
-  );
+          )}
+        </AutoSizer>
+      );
+    }
+    return null; // 默认不显示任何内容
+  };
+
+  return <div className="flex-grow w-full pt-2 min-h-0">{renderContent()}</div>;
 }
 
 export default MainContent;
