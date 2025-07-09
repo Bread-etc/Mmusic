@@ -1,404 +1,103 @@
-import { Button } from "@/components/ui/button";
-import { NeteaseSongItem, NeteaseSongQuality } from "@/types/NeteaseTypes";
+import { Heart, Pause, Play, Repeat, Repeat1, Shuffle, SkipBack, SkipForward, Volume2, VolumeX } from "lucide-react";
 import { usePlayerStore } from "@/store/player";
-import { useAudioPlayer, SongInfo } from "./useAudioPlayer";
-import { songDetailNetease, songUrlNetease } from "@/lib/music/neteaseService";
-import {
-  Pause,
-  Play,
-  SkipBack,
-  SkipForward,
-  Volume2,
-  VolumeX,
-  Repeat,
-  Shuffle,
-  Heart,
-  HeartOff,
-  Repeat1,
-} from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
+import { formatTime } from "@/lib/utils";
 
 function Dock() {
-  const { playlist, currentIndex, isPlaying, play, pause, playNext, playPrev } = usePlayerStore();
-
-  // 使用 useAudioPlayer Hook 进行音频管理
   const {
-    audioState,
-    playlist: audioPlaylist,
-    currentSong,
+    currentSong: getCurrentSong,
+    isPlaying,
+    currentTime,
+    duration,
+    volume,
+    isMuted,
+    repeatMode,
+    isShuffled,
     isLiked,
     togglePlay,
-    playPrevious,
-    playNext: audioPlayNext,
-    setPlaylistSongs,
+    playNext,
+    playPrev,
+    setCurrentTime,
     setVolume,
     toggleMute,
-    setProgress,
-    toggleShuffle,
     toggleRepeat,
+    toggleShuffle,
     toggleLike,
-    formatTime,
-    getProgressPercentage,
-    getVolumePercentage,
-    handleLoadedMetadata,
-    handleTimeUpdate,
-    handleAudioEnded,
-    handleAudioError,
-  } = useAudioPlayer();
+  } = usePlayerStore();
 
+  const currentSong = getCurrentSong(); // 调用函数获取真实的歌曲对象
 
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isVolumeVisible, setIsVolumeVisible] = useState(false);
-
-  const currentNeteaseSong = playlist[currentIndex];
-
-  /**
-   * 将 NeteaseSongItem 转换为 SongInfo 格式
-   * @param neteaseSong 网易云歌曲数据
-   * @param audioUrl 播放URL
-   * @returns SongInfo 对象
-   */
-  const convertToSongInfo = async (neteaseSong: NeteaseSongItem, audioUrl: string): Promise<SongInfo> => {
-    const detailRes = await songDetailNetease(neteaseSong.id.toString());
-    const songDetail = detailRes.success ? detailRes.data.songs[0] : neteaseSong;
-
-    return {
-      id: neteaseSong.id.toString(),
-      title: neteaseSong.name,
-      artist: neteaseSong.artists?.map(a => a.name).join(", ") || "未知艺术家",
-      album: songDetail.al?.name || neteaseSong.album?.name || "未知专辑", // 修复：使用可选链
-      cover: songDetail.al?.picUrl || neteaseSong.album?.picUrl || "", // 修复：使用可选链
-      url: audioUrl,
-      duration: neteaseSong.duration ? Math.floor(neteaseSong.duration / 1000) : 0,
-      source: "netease",
-      quality: "standard"
-    }
+  if (!currentSong) {
+    return null; // 如果没有当前播放歌曲，不渲染Dock
   }
 
-  /**
-   * 获取歌曲播放URL
-   * @param song 网易云音乐歌曲数据
-   * @returns 播放URL或undefined
-   */
-  const getSongUrl = async (song: NeteaseSongItem): Promise<string | undefined> => {
-    try {
-      const quality: NeteaseSongQuality = "standard";
-      const urlRes = await songUrlNetease(song.id.toString(), quality);
-
-      if (urlRes.success && urlRes.data.data?.[0]?.url) {
-        return urlRes.data.data[0].url;
-      }
-      return undefined;
-    } catch (error) {
-      console.error("获取歌曲URL失败:", error);
-      return undefined;
-    }
-  }
-
-  /**
-   * 处理歌曲点击播放
-   * 当用户点击播放按钮或切换歌曲时调用
-   */
-  const handlePlaySong = async () => {
-    if (!currentNeteaseSong) return;
-
-    try {
-      // 获取播放URL
-      const audioUrl = await getSongUrl(currentNeteaseSong);
-      if (!audioUrl) {
-        console.error("无法获取歌曲播放链接");
-        return;
-      }
-
-      // 转换为SongInfo格式
-      const songInfo = await convertToSongInfo(currentNeteaseSong, audioUrl);
-
-      // 设置播放列表（这里只设置当前歌曲，您可以根据需要设置整个播放列表）
-      setPlaylistSongs([songInfo], 0);
-
-      // 开始播放
-      if (!isPlaying) {
-        togglePlay();
-      }
-    } catch (error) {
-      console.error("播放歌曲失败:", error);
-    }
+  const handleProgressChange = (value: number[]) => {
+    setCurrentTime(value[0]);
   };
 
-  /**
-   * 处理上一首
-   */
-  const handlePrevious = () => {
-    playPrev();
-    setTimeout(() => {
-      handlePlaySong();
-    }, 100);
+  const handleVolumeChange = (value: number[]) => {
+    setVolume(value[0]);
   };
 
-  /**
-   * 处理下一首
-   */
-  const handleNext = () => {
-    playNext(); // 调用store中的下一首方法
-    // 播放新歌曲
-    setTimeout(() => {
-      handlePlaySong();
-    }, 100);
-  };
-
-  /**
-   * 处理进度条拖拽
-   */
-  const handleProgressMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    handleProgressClick(e);
-  };
-
-  const handleProgressClick = (e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const percent = ((e.clientX - rect.left) / rect.width) * 100;
-    setProgress(Math.max(0, Math.min(100, percent)));
-  };
-
-  const handleProgressMouseMove = (e: MouseEvent) => {
-    if (!isDragging) return;
-    const progressBar = document.getElementById('progress-bar');
-    if (!progressBar) return;
-
-    const rect = progressBar.getBoundingClientRect();
-    const percent = ((e.clientX - rect.left) / rect.width) * 100;
-    setProgress(Math.max(0, Math.min(100, percent)));
-  };
-
-  const handleProgressMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  /**
- * 处理音量调节
- */
-  const handleVolumeChange = (e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const percent = ((e.clientX - rect.left) / rect.width);
-    setVolume(Math.max(0, Math.min(1, percent)));
-  };
-
-  // 监听全局鼠标事件（用于进度条拖拽）
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleProgressMouseMove);
-      document.addEventListener('mouseup', handleProgressMouseUp);
-      return () => {
-        document.removeEventListener('mousemove', handleProgressMouseMove);
-        document.removeEventListener('mouseup', handleProgressMouseUp);
-      };
-    }
-  }, [isDragging]);
-
-  // 同步音频元素状态
-  useEffect(() => {
-    if (!audioRef.current || !currentSong) return;
-
-    const audio = audioRef.current;
-    audio.src = currentSong.url;
-
-    if (audioState.isPlaying) {
-      audio.play().catch(console.error);
-    } else {
-      audio.pause();
-    }
-  }, [audioState.isPlaying, currentSong]);
-
-  // 同步音频元素音量
-  useEffect(() => {
-    if (!audioRef.current) return;
-    audioRef.current.volume = audioState.isMuted ? 0 : audioState.volume;
-  }, [audioState.volume, audioState.isMuted]);
-
-  // 同步音频元素播放时间
-  useEffect(() => {
-    if (!audioRef.current || isDragging) return;
-    audioRef.current.currentTime = audioState.currentTime;
-  }, [audioState.currentTime, isDragging]);
-
-  // 当store中的歌曲变化时，自动播放新歌曲
-  useEffect(() => {
-    if (currentNeteaseSong) {
-      handlePlaySong();
-    }
-  }, [currentNeteaseSong]);
+  const songIsLiked = isLiked(currentSong.id);
 
   return (
-    <div className="h-[15%] flex items-center w-full px-6 bg-white/80 dark:bg-black/80 backdrop-blur-md border-t border-gray-200 dark:border-gray-700">
-      {/* 隐藏的音频元素 */}
-      <audio
-        ref={audioRef}
-        onLoadedMetadata={(e) => handleLoadedMetadata(e.currentTarget.duration)}
-        onTimeUpdate={(e) => handleTimeUpdate(e.currentTarget.currentTime)}
-        onEnded={handleAudioEnded}
-        onError={() => handleAudioError("音频加载失败")}
-        preload="auto"
-      />
+    <div className="app-region-no-drag absolute bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-4xl h-20 px-6 bg-slate-50/60 dark:bg-slate-900/60 backdrop-blur-lg rounded-2xl shadow-lg border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-between">
+      {/* 占位，保持中间部分居中 */}
+      <div className="w-64 hidden md:block"></div>
 
-      {/* 左侧：歌曲信息 */}
-      <div className="flex items-center flex-1 min-w-0 mr-4">
-        {/* 专辑封面 */}
-        <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-700 flex-shrink-0 mr-3">
-          {currentSong?.cover ? (
-            <img
-              src={currentSong.cover}
-              alt={currentSong.title}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex-center text-gray-400">
-              <Heart className="w-6 h-6" />
-            </div>
-          )}
+      {/* 中间：播放控制和进度条 */}
+      <div className="flex-grow flex flex-col items-center justify-center mx-4">
+        {/* 上层：播放控制按钮 */}
+        <div className="flex items-center gap-4">
+          <Button onClick={toggleShuffle} size="icon" variant="ghost" className={`p-1 ${isShuffled ? "text-sky-500" : "theme-text"} hover:bg-black/5 dark:hover:bg-white/5`}>
+            <Shuffle size={20} />
+          </Button>
+          <Button onClick={playPrev} size="icon" variant="ghost" className="p-2 theme-text hover:bg-black/5 dark:hover:bg-white/5">
+            <SkipBack size={22} />
+          </Button>
+          <Button onClick={togglePlay} size="icon" className="p-3 bg-sky-500 text-white shadow-md hover:scale-105 transition-transform">
+            {isPlaying ? <Pause size={24} /> : <Play size={24} className="ml-1" />}
+          </Button>
+          <Button onClick={playNext} size="icon" variant="ghost" className="p-2 theme-text-primary hover:bg-black/5 dark:hover:bg-white/5">
+            <SkipForward size={22} />
+          </Button>
+          <Button onClick={toggleRepeat} size="icon" variant="ghost" className={`p-1 ${repeatMode === "one" ? "text-sky-500" : repeatMode === 'all' ? 'text-sky-500' : 'theme-text-secondary'} hover:bg-black/5 dark:hover:bg-white/5`}>
+            {repeatMode === "one" ? <Repeat1 size={20} className="text-sky-500" /> : <Repeat size={20} className={`${repeatMode === 'all' ? 'text-sky-500' : ''}`} />}
+          </Button>
         </div>
 
-        {/* 歌曲信息 */}
-        <div className="flex-1 min-w-0">
-          {currentSong ? (
-            <>
-              <div className="font-bold text-sm theme-text truncate">
-                {currentSong.title}
-              </div>
-              <div className="text-xs text-gray-500 truncate">
-                {currentSong.artist}
-              </div>
-            </>
-          ) : (
-            <div className="text-gray-400 text-sm">暂无播放</div>
-          )}
+        {/* 下层：进度条 */}
+        <div className="w-full flex items-center gap-2 mt-1">
+          <span className="text-xs theme-text w-10 text-center">{formatTime(currentTime)}</span>
+          <Slider
+            value={[currentTime]}
+            max={duration}
+            step={1}
+            onValueChange={handleProgressChange}
+            className="flex-grow"
+          />
+          <span className="text-xs theme-text w-10 text-center">{formatTime(duration)}</span>
         </div>
+      </div>
 
-        {/* 收藏按钮 */}
-        <Button
-          size="icon"
-          variant="ghost"
-          className="w-8 h-8 ml-2 flex-shrink-0"
-          onClick={toggleLike}
-        >
-          {isLiked ? (
-            <Heart className="w-4 h-4 text-red-500 fill-current" />
-          ) : (
-            <HeartOff className="w-4 h-4" />
-          )}
+      {/* 右侧：其他功能 */}
+      <div className="w-64 flex items-center justify-end gap-4">
+        <Button onClick={toggleLike} size="icon" variant="ghost" className={`p-1 ${songIsLiked ? "text-red-500 fill-current" : "theme-text"} hover:bg-black/5 dark:hover:bg-white/5`}>
+          <Heart size={20} className={`${songIsLiked ? "text-red-500 fill-current" : "theme-text"}`} />
         </Button>
-      </div>
-
-      {/* 中间：播放控制区域 */}
-      <div className="flex flex-col items-center flex-1 max-w-md mx-4">
-        {/* 播放控制按钮 */}
-        <div className="flex items-center gap-2 mb-2">
-          {/* 随机播放 */}
-          <Button
-            size="icon"
-            variant="ghost"
-            className={`w-8 h-8 ${audioState.isShuffled ? 'text-blue-500' : ''}`}
-            onClick={toggleShuffle}
-          >
-            <Shuffle className="w-4 h-4" />
+        <div className="flex items-center gap-2 w-28">
+          <Button onClick={toggleMute} variant="ghost" size="icon" className="theme-text">
+            {isMuted || volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
           </Button>
-
-          {/* 上一首 */}
-          <Button size="icon" variant="ghost" className="w-8 h-8" onClick={handlePrevious}>
-            <SkipBack className="w-4 h-4" />
-          </Button>
-
-          {/* 播放/暂停 */}
-          <Button
-            size="icon"
-            variant="ghost"
-            className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all"
-            onClick={audioState.isPlaying ? togglePlay : handlePlaySong}
-          >
-            {audioState.isPlaying ? (
-              <Pause className="w-5 h-5" />
-            ) : (
-              <Play className="w-5 h-5 ml-0.5" />
-            )}
-          </Button>
-
-          {/* 下一首 */}
-          <Button size="icon" variant="ghost" className="w-8 h-8" onClick={handleNext}>
-            <SkipForward className="w-4 h-4" />
-          </Button>
-
-          {/* 循环模式 */}
-          <Button
-            size="icon"
-            variant="ghost"
-            className={`w-8 h-8 ${audioState.repeatMode !== 'none' ? 'text-blue-500' : ''}`}
-            onClick={toggleRepeat}
-          >
-            {audioState.repeatMode === 'one' ? (
-              <Repeat1 className="w-4 h-4" />
-            ) : (
-              <Repeat className="w-4 h-4" />
-            )}
-          </Button>
-        </div>
-
-        {/* 进度条 */}
-        <div className="flex items-center gap-2 w-full">
-          <span className="text-xs text-gray-500 w-10 text-right">
-            {formatTime(audioState.currentTime)}
-          </span>
-          <div
-            id="progress-bar"
-            className="flex-1 h-1 bg-gray-200 dark:bg-gray-700 rounded-full cursor-pointer relative"
-            onClick={handleProgressClick}
-            onMouseDown={handleProgressMouseDown}
-          >
-            <div
-              className="h-full bg-blue-500 rounded-full transition-all duration-150"
-              style={{ width: `${getProgressPercentage()}%` }}
-            />
-            <div
-              className="absolute top-1/2 transform -translate-y-1/2 w-3 h-3 bg-blue-500 rounded-full opacity-0 hover:opacity-100 transition-opacity"
-              style={{ left: `${getProgressPercentage()}%`, marginLeft: '-6px' }}
-            />
-          </div>
-          <span className="text-xs text-gray-500 w-10">
-            {formatTime(audioState.duration)}
-          </span>
-        </div>
-      </div>
-
-      {/* 右侧：音量控制 */}
-      <div className="flex items-center flex-1 justify-end">
-        <div
-          className="flex items-center gap-2 relative"
-          onMouseEnter={() => setIsVolumeVisible(true)}
-          onMouseLeave={() => setIsVolumeVisible(false)}
-        >
-          <Button
-            size="icon"
-            variant="ghost"
-            className="w-8 h-8"
-            onClick={toggleMute}
-          >
-            {audioState.isMuted || audioState.volume === 0 ? (
-              <VolumeX className="w-4 h-4" />
-            ) : (
-              <Volume2 className="w-4 h-4" />
-            )}
-          </Button>
-
-          {/* 音量条 */}
-          <div
-            className={`w-20 h-1 bg-gray-200 dark:bg-gray-700 rounded-full cursor-pointer transition-all duration-300 ${isVolumeVisible ? 'opacity-100' : 'opacity-0'
-              }`}
-            onClick={handleVolumeChange}
-          >
-            <div
-              className="h-full bg-blue-500 rounded-full"
-              style={{ width: `${getVolumePercentage()}%` }}
-            />
-          </div>
+          <Slider
+            value={isMuted ? [0] : [volume]}
+            max={1}
+            step={0.01}
+            onValueChange={handleVolumeChange}
+            className="flex-grow"
+          />
         </div>
       </div>
     </div>

@@ -23,20 +23,14 @@ const formatDuration = (seconds: number): string => {
 export function SongCard({ song, index }: SongCardProps) {
   const [isFetchingUrl, setIsFetchingUrl] = useState(false);
 
-  const {
-    currentSong,
-    isPlaying,
-    playSongNow,
-    togglePlay,
-  } = usePlayerStore((state) => ({
-    currentSong: state.currentSong(),
-    isPlaying: state.isPlaying,
-    playSongNow: state.playSongNow,
-    togglePlay: state.togglePlay,
-  }));
+  // 正确地从 Zustand store 中选择状态，避免不必要的重渲染
+  const isPlaying = usePlayerStore((state) => state.isPlaying);
+  const currentSongId = usePlayerStore((state) => state.currentSong()?.id);
+  const playSongNow = usePlayerStore((state) => state.playSongNow);
+  const togglePlay = usePlayerStore((state) => state.togglePlay);
 
   const songInfo = transformNeteaseSong(song);
-  const isCurrentSong = currentSong?.id === songInfo.id;
+  const isCurrentSong = currentSongId === songInfo.id;
 
   const handlePlay = async () => {
     // 如果点击的是当前正在播放的歌曲，则切换播放/暂停状态
