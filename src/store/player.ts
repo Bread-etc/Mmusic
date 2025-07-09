@@ -9,7 +9,7 @@ export interface SongInfo {
   id: string;
   /** 歌曲标题 */
   title: string;
-  /** 艺术家/歌手名 */
+  /** 歌手名 */
   artist: string;
   /** 专辑名 */
   album: string;
@@ -47,12 +47,20 @@ interface PlayerStore {
   repeatMode: "none" | "all" | "one";
   /** 是否随机播放 */
   isShuffled: boolean;
+  /** 喜欢歌曲歌单  */
+  likedSongs: Array<SongInfo>;
 
   /**
    * 获取当前正在播放的歌曲信息。
    * @returns {SongInfo | undefined} 当前歌曲对象，如果播放列表为空则返回 undefined。
    */
   currentSong: () => SongInfo | undefined;
+  /**
+   * 检查指定歌曲是否在喜欢列表中。
+   * @param songId 要检查的歌曲 ID
+   * @returns {boolean} 如果歌曲在喜欢列表中则返回 true，否则返回 false。
+   */
+  isLiked: (songId: string) => boolean;
 
   /** 开始或恢复播放 */
   play: () => void;
@@ -103,15 +111,15 @@ interface PlayerStore {
   toggleRepeat: () => void;
   /** 切换随机播放模式 */
   toggleShuffle: () => void;
+
+  /** 切换歌曲喜欢状态 */
+  toggleLike: () => void;
 }
 
 // 创建 Zustand Store，并使用 persist 中间件进行持久化存储
 export const usePlayerStore = create<PlayerStore>()(
   persist(
     (set, get) => ({
-      // ------------------
-      // 初始状态
-      // ------------------
       playlist: [],
       currentIndex: -1,
       isPlaying: false,
@@ -121,18 +129,16 @@ export const usePlayerStore = create<PlayerStore>()(
       isMuted: false,
       repeatMode: "none",
       isShuffled: false,
+      likedSongs: [],
 
-      // ------------------
       // 派生状态
-      // ------------------
       currentSong: () => {
         const { playlist, currentIndex } = get();
         return playlist[currentIndex];
       },
+      isLiked: (songId) => get().likedSongs.some((s) => s.id === songId),
 
-      // ------------------
-      // Actions 实现
-      // ------------------
+      // Actions
       play: () => set({ isPlaying: true }),
       pause: () => set({ isPlaying: false }),
       togglePlay: () => {
@@ -204,16 +210,23 @@ export const usePlayerStore = create<PlayerStore>()(
         } else if (repeatMode === "all") {
           // 列表循环
           set({ currentIndex: 0, currentTime: 0, isPlaying: true });
+        } else {
+          // 如果是最后一首歌且不循环，则暂停
+          set({ isPlaying: false });
         }
       },
 
       playPrev: () => {
-        const { playlist, currentIndex } = get();
+        const { playlist, currentIndex, currentTime } = get();
         if (playlist.length === 0) return;
 
-        const prevIndex = currentIndex - 1;
-        if (prevIndex >= 0) {
-          set({ currentIndex: prevIndex, currentTime: 0, isPlaying: true });
+        if (currentTime > 3) {
+          set({ currentTime: 0 });
+        } else {
+          const prevIndex = currentIndex - 1;
+          if (prevIndex >= 0) {
+            set({ currentIndex: prevIndex, currentTime: 0, isPlaying: true });
+          }
         }
       },
 
@@ -225,9 +238,7 @@ export const usePlayerStore = create<PlayerStore>()(
         set({ volume: newVolume, isMuted: newVolume === 0 });
       },
 
-      toggleMute: () => {
-        set((state) => ({ isMuted: !state.isMuted }));
-      },
+      toggleMute: () => set((state) => ({ isMuted: !state.isMuted })),
 
       toggleRepeat: () => {
         set((state) => {
@@ -238,18 +249,36 @@ export const usePlayerStore = create<PlayerStore>()(
         });
       },
 
-      toggleShuffle: () => {
-        set((state) => ({ isShuffled: !state.isShuffled }));
+      toggleShuffle: () => set((state) => ({ isShuffled: !state.isShuffled })),
+      
+      toggleLike: () => {
+        const song = get().currentSong();
+        if (!song) return;
+        set((state) => {
+          const isLiked = state.likedSongs.some((s) => s.id === song.id);
+          if (isLiked) {
+            // 从喜欢列表中移除
+            return {
+              likedSongs: state.likedSongs.filter((s) => s.id !== song.id),
+            };
+          } else {
+            // 添加到喜欢列表
+            return {
+              likedSongs: [...state.likedSongs, song],
+            };
+          }
+        });
       },
     }),
     {
       name: "mmusic-player-storage", // 持久化存储的键名
-      // 只持久化用户的偏好设置，不存储播放列表和状态
+      // 只持久化用户的偏好设置和喜欢的歌曲列表
       partialize: (state) => ({
         volume: state.volume,
         isMuted: state.isMuted,
         repeatMode: state.repeatMode,
         isShuffled: state.isShuffled,
+        likedSongs: state.likedSongs,
       }),
     }
   )
