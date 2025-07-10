@@ -4,21 +4,14 @@ import { toast } from "sonner";
 
 import { usePlayerStore } from "@/store/player";
 import { NeteaseSongItem } from "@/types/NeteaseTypes";
-import { songUrlNetease } from "@/lib/music/neteaseService";
+import { songDetailNetease, songUrlNetease } from "@/lib/music/neteaseService";
 import { transformNeteaseSong } from "@/lib/music/utils";
+import { formatTime } from "@/lib/utils";
 
 interface SongCardProps {
   index: number;
   song: NeteaseSongItem;
 }
-
-// 时间格式化工具函数
-const formatDuration = (seconds: number): string => {
-  if (isNaN(seconds) || seconds < 0) return "00:00";
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-};
 
 export function SongCard({ song, index }: SongCardProps) {
   const [isFetchingUrl, setIsFetchingUrl] = useState(false);
@@ -42,14 +35,16 @@ export function SongCard({ song, index }: SongCardProps) {
     setIsFetchingUrl(true);
     try {
       const res = await songUrlNetease(song.id.toString(), "standard");
+      const resDetail = await songDetailNetease(song.id.toString());
       const songUrlData = res.data.data[0];
+      const picUrl = resDetail.data.songs[0].al.picUrl;
 
       if (!songUrlData || !songUrlData.url) {
         toast.error("获取播放地址失败，可能需要VIP权限");
         return;
       }
 
-      const playableSong = { ...songInfo, url: songUrlData.url };
+      const playableSong = { ...songInfo, url: songUrlData.url, cover: picUrl };
       playSongNow(playableSong);
     } catch (error) {
       console.error("播放歌曲时出错:", error);
@@ -61,7 +56,7 @@ export function SongCard({ song, index }: SongCardProps) {
 
   return (
     <div
-      className={`group flex items-center p-2 rounded-lg cursor-pointer transition-colors duration-200 ${
+      className={`flex items-center p-2 rounded-lg cursor-pointer transition-colors duration-200 ${
         isCurrentSong
           ? "bg-sky-100 dark:bg-sky-900/50"
           : "hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
@@ -102,7 +97,7 @@ export function SongCard({ song, index }: SongCardProps) {
 
       {/* 右侧：歌曲时长 */}
       <div className="w-16 text-right text-sm theme-text opacity-70">
-        {formatDuration(songInfo.duration)}
+        {formatTime(songInfo.duration)}
       </div>
     </div>
   );

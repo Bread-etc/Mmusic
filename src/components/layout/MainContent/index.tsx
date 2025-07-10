@@ -1,21 +1,17 @@
 import { useEffect, useState, useRef } from "react";
-import { AutoSizer, List, ListRowProps } from "react-virtualized";
 import { toast } from "sonner";
 
 import { useSearchResultStore } from "@/store/searchResult";
-import { usePlayerStore } from "@/store/player";
 import { searchNetease } from "@/lib/music/neteaseService";
 import { NeteaseSongItem } from "@/types/NeteaseTypes";
 import { SongCard } from "./SongCard";
 
-import "react-virtualized/styles.css"; // 引入虚拟列表样式
+import "react-virtualized/styles.css";
+import { AutoSizer, List, ListRowProps } from "react-virtualized";
 
-function MainContent() {
-  // 从Zustand store中获取状态
+export default function MainContent() {
   const { keyword } = useSearchResultStore();
-  const currentSong = usePlayerStore((state) => state.currentSong());
 
-  // 组件内部状态
   const [songs, setSongs] = useState<NeteaseSongItem[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -94,13 +90,29 @@ function MainContent() {
 
   // 根据不同状态显示不同内容
   const renderContent = () => {
-    // 1. 如果有搜索关键词，则显示搜索相关内容
     if (keyword) {
       if (isLoading && songs.length === 0) {
-        return <div className="flex-center h-full title-small opacity-50">正在努力搜索...</div>;
+        // 骨架屏加载状态
+        return (
+          <div className="p-2 space-y-2">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-3 p-2 rounded-lg">
+                <div className="w-10 h-10 bg-zinc-200 dark:bg-zinc-800 rounded animate-pulse"></div>
+                <div className="flex-1 space-y-2">
+                  <div className="w-3/4 h-4 bg-zinc-200 dark:bg-zinc-800 rounded animate-pulse"></div>
+                  <div className="w-1/2 h-3 bg-zinc-200 dark:bg-zinc-800 rounded animate-pulse"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        );
       }
       if (error) {
-        return <div className="flex-center h-full title-small opacity-50">{error}</div>;
+        return (
+          <div className="flex-center h-full title-small opacity-50">
+            {error}
+          </div>
+        );
       }
       if (songs.length > 0) {
         return (
@@ -124,31 +136,21 @@ function MainContent() {
         );
       }
       // 如果没有歌曲且没有错误，可能是因为没搜到，显示错误信息
-      if(error) return <div className="flex-center h-full title-small opacity-50">{error}</div>;
-    }
-
-    // 2. 如果没有搜索，但有当前播放歌曲，显示“正在播放”界面
-    if (!keyword && currentSong) {
-      return (
-        <div className="h-full flex-center flex-col gap-8 p-4">
-          <img
-            src={currentSong.cover}
-            alt={currentSong.title}
-            className="w-64 h-64 rounded-lg shadow-2xl object-cover animate-fade-in"
-          />
-          <div className="text-center">
-            <h2 className="text-2xl font-bold">{currentSong.title}</h2>
-            <p className="text-lg opacity-80 mt-2">{currentSong.artist}</p>
+      if (error)
+        return (
+          <div className="flex-center h-full title-small opacity-50">
+            {error}
           </div>
-        </div>
-      );
+        );
     }
 
-    // 3. 默认初始界面
-    return <div className="flex-center h-full title-small opacity-50">搜索你喜欢的音乐</div>;
+    // 2. 默认初始界面
+    return (
+      <div className="flex-center h-full title-small opacity-50">
+        搜索你喜欢的音乐
+      </div>
+    );
   };
 
   return <div className="flex-grow w-full pt-2 min-h-0">{renderContent()}</div>;
 }
-
-export default MainContent;
