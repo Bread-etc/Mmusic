@@ -7,7 +7,7 @@
 
 @font-face {
   font-family: "Noto Sans SC";
-  src: url("/public/fonts/NotoSansSC-Regular.woff2") format("woff2");
+  src: url("/fonts/NotoSansSC-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -15,7 +15,7 @@
 
 @font-face {
   font-family: "Noto Sans SC";
-  src: url("/public/fonts/NotoSansSC-Medium.woff2") format("woff2");
+  src: url("/fonts/NotoSansSC-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -23,7 +23,7 @@
 
 @font-face {
   font-family: "Noto Sans SC";
-  src: url("/public/fonts/NotoSansSC-Bold.woff2") format("woff2");
+  src: url("/fonts/NotoSansSC-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -31,7 +31,7 @@
 
 @font-face {
   font-family: "Noto Sans SC";
-  src: url("/public/fonts/NotoSansSC-ExtraBold.woff2") format("woff2");
+  src: url("/fonts/NotoSansSC-ExtraBold.woff2") format("woff2");
   font-weight: 800;
   font-style: normal;
   font-display: swap;
@@ -91,74 +91,14 @@ body,
   app-region: drag !important;
 }
 
-/* 主题切换动画（View Transition API 和回退方案） */
-@media (prefers-reduced-motion: no-preference) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    mix-blend-mode: normal;
-    animation: none;
-  }
-
-  /* 优化的圆形展开动画 */
-  ::view-transition-new(root) {
-    animation: theme-fade-in 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  ::view-transition-old(root) {
-    animation: theme-fade-out 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* 回退方案的动画，确保背景色不会变透明 */
-  html[style*="--theme-transition: 1"]::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    pointer-events: none;
-    background: var(--theme-bg, #ffffff);
-    clip-path: circle(0% at var(--circle-position-x) var(--circle-position-y));
-    animation: circle-reveal 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  }
-
-  html.dark[style*="--theme-transition: 1"]::before {
-    --theme-bg: #1e1e1e;
-  }
-
-  html:not(.dark)[style*="--theme-transition: 1"]::before {
-    --theme-bg: #ffffff;
-  }
+/* 主题切换动画：只保留最关键的修复 */
+::view-transition-old(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
-@keyframes circle-reveal {
-  0% {
-    clip-path: circle(0% at var(--circle-position-x) var(--circle-position-y));
-  }
-
-  100% {
-    clip-path: circle(
-      150% at var(--circle-position-x) var(--circle-position-y)
-    );
-  }
-}
-
-@keyframes theme-fade-in {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes theme-fade-out {
-  0% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-  }
+::view-transition-new(root) {
+  mix-blend-mode: normal;
 }
 
 /* 隐藏 react-virtualized 的滚动条 */
