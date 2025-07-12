@@ -25,7 +25,7 @@ export function SearchInput() {
       value={keyword}
       onChange={(e) => setKeyword(e.target.value)}
       onKeyDown={handleSearch}
-      className="bg-[#f5f5f5] dark:bg-[#000] border-none theme-text 
+      className="bg-[#f5f5f5] dark:bg-[#000] border-none  
         w-1/2 h-8 font-noto text-center rounded-xl app-region-no-drag
         focus-visible:ring-0 focus-visible:ring-offset-0 mx-auto"
       placeholder="搜索音乐"

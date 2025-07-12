@@ -6,7 +6,7 @@ export function GlobalLoading() {
   if (!loading) return null;
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30">
-      <LoaderCircle className="h-8 w-8 animate-spin theme-text" />
+      <LoaderCircle className="h-8 w-8 animate-spin" />
     </div>
   );
 }

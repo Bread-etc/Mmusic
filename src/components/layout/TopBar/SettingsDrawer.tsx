@@ -21,7 +21,7 @@ function SettingsDrawer() {
       <Drawer.Trigger asChild>
         <Button
           size="icon"
-          className="btn-no-border flex-center app-region-no-drag animate-spin hover:animate-paused animate-duration-2000"
+          className="btn-reset  flex-center app-region-no-drag animate-spin hover:animate-paused animate-duration-2000"
           disabled={isOpen}
         >
           <Music2 className="h-5 w-5" strokeWidth={3} />
@@ -63,7 +63,7 @@ function SettingsDrawer() {
                 variant="outline"
                 onClick={toggleTheme}
                 className="app-region-no-drag rounded-3xl btn-no-border px-4 
-                theme-text hover:bg-gray-100 dark:hover:bg-gray-800"
+                 hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 <span className="flex-center gap-2">
                   {theme === "light" ? (
@@ -91,7 +91,7 @@ function SettingsDrawer() {
                   <Button
                     variant="outline"
                     className="app-region-no-drag rounded-3xl btn-no-border px-4 
-                theme-text hover:bg-gray-100 dark:hover:bg-gray-800"
+                 hover:bg-gray-100 dark:hover:bg-gray-800"
                   >
                     <span className="flex-center gap-2">
                       <QrCode className="h-4 w-4" />
@@ -111,7 +111,7 @@ function SettingsDrawer() {
                 variant="outline"
                 onClick={handleLogout}
                 className="app-region-no-drag rounded-3xl btn-no-border px-4 
-                theme-text hover:bg-gray-100 dark:hover:bg-gray-800"
+                 hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 <span className="flex-center gap-2">
                   <BrushCleaning className="h-4 w-4" />

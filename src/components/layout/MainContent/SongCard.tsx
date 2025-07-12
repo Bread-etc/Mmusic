@@ -64,7 +64,7 @@ export function SongCard({ song, index }: SongCardProps) {
       onClick={handlePlay}
     >
       {/* 左侧：索引或播放/加载图标 */}
-      <div className="w-10 flex-center text-sm theme-text opacity-60">
+      <div className="w-10 flex-center text-sm  opacity-60">
         {isFetchingUrl ? (
           <LoaderCircle className="w-5 h-5 animate-spin text-sky-500" />
         ) : isCurrentSong && isPlaying ? (
@@ -75,7 +75,7 @@ export function SongCard({ song, index }: SongCardProps) {
         )}
         {/* 鼠标悬浮时显示播放按钮 (如果不是加载中或正在播放) */}
         <Play
-          className={`w-5 h-5 hidden group-hover:block theme-text opacity-80${
+          className={`w-5 h-5 hidden group-hover:block  opacity-80${
             isFetchingUrl || (isCurrentSong && isPlaying) ? " !hidden" : ""
           }`}
         />
@@ -85,18 +85,16 @@ export function SongCard({ song, index }: SongCardProps) {
       <div className="flex-1 min-w-0 mx-2">
         <p
           className={`font-medium truncate ${
-            isCurrentSong ? "text-sky-600 dark:text-sky-400" : "theme-text"
+            isCurrentSong ? "text-sky-600 dark:text-sky-400" : ""
           }`}
         >
           {songInfo.title}
         </p>
-        <p className="text-sm theme-text opacity-70 truncate">
-          {songInfo.artist}
-        </p>
+        <p className="text-sm  opacity-70 truncate">{songInfo.artist}</p>
       </div>
 
       {/* 右侧：歌曲时长 */}
-      <div className="w-16 text-right text-sm theme-text opacity-70">
+      <div className="w-16 text-right text-sm  opacity-70">
         {formatTime(songInfo.duration)}
       </div>
     </div>
