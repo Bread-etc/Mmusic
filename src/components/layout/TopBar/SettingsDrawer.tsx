@@ -1,111 +1,15 @@
-/**
- * 总设置抽屉
- * @function toggleTheme 切换主题 ✔
- * @function loginByQrCode 二维码扫码登录 ✔
- * @function logout 退出登录 ✔
- * @function setLanguage 切换语言 ❌
- * @function setPlaySpeed 切换播放速度 ❌
- */
 import { BrushCleaning, Moon, Music2, QrCode, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Drawer } from "vaul";
 import { Separator } from "@/components/ui/separator";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { QrLoginDialog } from "./QrLoginDialog";
 import { toast } from "sonner";
-
-type Theme = "light" | "dark";
-type SavedTheme = "light" | "dark" | null;
+import { useThemeTransition } from "@/hooks/useThemeTransition";
 
 function SettingsDrawer() {
-  const [theme, setTheme] = useState<Theme>("light");
+  const { theme, toggleTheme } = useThemeTransition();
   const [isOpen, setIsOpen] = useState(false);
-
-  // 初始化主题
-  useEffect(() => {
-    window.ipcRenderer
-      .invoke("getStore", "theme")
-      .then((savedTheme: SavedTheme) => {
-        if (savedTheme) {
-          setTheme(savedTheme);
-          document.documentElement.classList.toggle(
-            "dark",
-            savedTheme === "dark"
-          );
-        } else {
-          const isDark = window.matchMedia(
-            "(prefers-color-scheme: dark)"
-          ).matches;
-          setTheme(isDark ? "dark" : "light");
-          document.documentElement.classList.toggle("dark", isDark);
-        }
-      });
-  }, []);
-
-  const toggleTheme = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-    const endRadius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y)
-    );
-    const newTheme = theme === "light" ? "dark" : "light";
-    const isDark = newTheme === "dark";
-
-    if (document.startViewTransition) {
-      document.documentElement.style.setProperty(
-        "--transition-position-x",
-        `${x}px`
-      );
-      document.documentElement.style.setProperty(
-        "--transition-position-y",
-        `${y}px`
-      );
-      document.documentElement.style.setProperty(
-        "--transition-radius",
-        `${endRadius}px`
-      );
-
-      const transition = document.startViewTransition(() => {
-        setTheme(newTheme);
-        document.documentElement.classList.toggle("dark", isDark);
-        window.ipcRenderer.invoke("setStore", "theme", newTheme);
-      });
-
-      transition.ready.then(() => {
-        const clipPath = [
-          `circle(0px at ${x}px ${y}px)`,
-          `circle(${endRadius}px at ${x}px ${y}px)`,
-        ];
-
-        document.documentElement.animate(
-          {
-            clipPath: clipPath,
-          },
-          {
-            duration: 500,
-            easing: "ease-in",
-            pseudoElement: "::view-transition-new(root)",
-            fill: "forwards",
-          }
-        );
-      });
-      return;
-    }
-    document.documentElement.style.setProperty("--theme-transition", "1");
-    document.documentElement.style.setProperty("--circle-position-x", `${x}px`);
-    document.documentElement.style.setProperty("--circle-position-y", `${y}px`);
-
-    // 设置新主题
-    setTheme(newTheme);
-    document.documentElement.classList.toggle("dark", isDark);
-    window.ipcRenderer.invoke("setStore", "theme", newTheme);
-
-    setTimeout(() => {
-      document.documentElement.style.setProperty("--theme-transition", "0");
-    }, 500);
-  };
 
   const handleLogout = async () => {
     await window.http.setCookie("netease", "");

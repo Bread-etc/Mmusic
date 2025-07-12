@@ -40,12 +40,6 @@
 :root {
   --font-family:
     "Noto Sans SC", Arial, Helvetica, system-ui, -apple-system, sans-serif;
-  --theme-transition: 0;
-  --circle-position-x: 50%;
-  --circle-position-y: 50%;
-  --transition-position-x: 50%;
-  --transition-position-y: 50%;
-  --transition-radius: 100vmax;
 }
 
 html,
@@ -91,7 +85,7 @@ body,
   app-region: drag !important;
 }
 
-/* 主题切换动画：只保留最关键的修复 */
+/* --- View Transitions 动画 --- */
 ::view-transition-old(root) {
   animation: none;
   mix-blend-mode: normal;
@@ -99,7 +93,19 @@ body,
 
 ::view-transition-new(root) {
   mix-blend-mode: normal;
+  clip-path: circle(0% at var(--circle-position-x) var(--circle-position-y));
+  animation: reveal 0.5s ease-in-out forwards;
 }
+
+@keyframes reveal {
+  to {
+    clip-path: circle(
+      var(--transition-radius) at var(--circle-position-x)
+        var(--circle-position-y)
+    );
+  }
+}
+/* --- 动画结束 --- */
 
 /* 隐藏 react-virtualized 的滚动条 */
 .ReactVirtualized__Grid::-webkit-scrollbar {
