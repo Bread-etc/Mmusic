@@ -9,7 +9,7 @@ var __privateGet = (obj, member, getter) => (__accessCheck(obj, member, "read fr
 var __privateAdd = (obj, member, value) => member.has(obj) ? __typeError("Cannot add the same private member more than once") : member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
 var __privateSet = (obj, member, value, setter) => (__accessCheck(obj, member, "write to private field"), setter ? setter.call(obj, value) : member.set(obj, value), value);
 var _validator, _encryptionKey, _options, _defaultValues;
-import electron, { ipcMain as ipcMain$1, app as app$1, BrowserWindow, dialog, nativeImage, Tray, Menu } from "electron";
+import electron, { ipcMain as ipcMain$1, app as app$1, BrowserWindow, nativeImage, Tray, Menu } from "electron";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path$1 from "node:path";
@@ -26974,30 +26974,11 @@ function createTray() {
       }
     }
   ]);
-  tray.setToolTip("MMusic");
+  tray.setToolTip("Mmusic");
   tray.setContextMenu(contextMenu);
   tray.on("click", () => {
     win == null ? void 0 : win.show();
   });
-}
-async function handleWindowClose(event) {
-  if (!isQuiting) {
-    event.preventDefault();
-    const result = await dialog.showMessageBox(win, {
-      type: "question",
-      buttons: ["最小化到托盘", "直接退出"],
-      title: "关闭确认",
-      message: "确定要关闭程序吗？",
-      detail: "您可以选择最小化到托盘或直接退出程序。",
-      cancelId: 0
-    });
-    if (result.response === 0) {
-      win == null ? void 0 : win.hide();
-    } else {
-      isQuiting = true;
-      app$1.quit();
-    }
-  }
 }
 function createWindow() {
   win = new BrowserWindow({
@@ -27011,7 +26992,7 @@ function createWindow() {
     frame: false,
     transparent: true,
     backgroundColor: "#00000000",
-    title: "MMusic",
+    title: "Mmusic",
     icon: path$1.join(process.env.VITE_PUBLIC, "icon.png"),
     webPreferences: {
       preload: path$1.join(__dirname, "preload.mjs"),
@@ -27022,40 +27003,17 @@ function createWindow() {
       spellcheck: false
     }
   });
-  win.on("close", async (event) => {
-    if (!isQuiting) {
-      event.preventDefault();
-      const closeAction = store.get("closeAction");
-      if (closeAction === void 0) {
-        const { response, checkboxChecked } = await dialog.showMessageBox(
-          win,
-          {
-            type: "question",
-            buttons: ["最小化到托盘", "直接退出"],
-            defaultId: 0,
-            title: "关闭确认",
-            message: "您要直接退出程序还是最小化到系统托盘？",
-            checkboxLabel: "不再询问",
-            checkboxChecked: false
-          }
-        );
-        if (checkboxChecked) {
-          store.set("closeAction", response === 0 ? "minimize" : "quit");
-        }
-        if (response === 0) {
-          win == null ? void 0 : win.hide();
-        } else {
-          isQuiting = true;
-          app$1.quit();
-        }
-      } else {
-        if (closeAction === "minimize") {
-          win == null ? void 0 : win.hide();
-        } else {
-          isQuiting = true;
-          app$1.quit();
-        }
-      }
+  win.on("close", (event) => {
+    if (isQuiting) return;
+    event.preventDefault();
+    const closeAction = store.get("closeAction");
+    if (closeAction === "minimize") {
+      win == null ? void 0 : win.hide();
+    } else if (closeAction === "exit") {
+      isQuiting = true;
+      app$1.quit();
+    } else {
+      win == null ? void 0 : win.webContents.send("open-close-confirm-dialog");
     }
   });
   win.webContents.on("did-finish-load", () => {
@@ -27086,8 +27044,17 @@ ipcMain$1.on("minimize-window", () => {
   win == null ? void 0 : win.minimize();
 });
 ipcMain$1.on("close-window", () => {
-  if (win) {
-    handleWindowClose(new Event("close"));
+  win == null ? void 0 : win.close();
+});
+ipcMain$1.on("close-dialog-response", (_event, { action, remember }) => {
+  if (remember) {
+    store.set("closeAction", action);
+  }
+  if (action === "minimize") {
+    win == null ? void 0 : win.hide();
+  } else {
+    isQuiting = true;
+    app$1.quit();
   }
 });
 ipcMain$1.handle("getStore", (_event, key) => {

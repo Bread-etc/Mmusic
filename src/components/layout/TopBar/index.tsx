@@ -3,7 +3,7 @@ import { Minimize2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "./SearchInput";
 
-function TopBar() {
+export default function TopBar() {
   const handleMinimize = () => {
     window.ipcRenderer.send("minimize-window");
   };
@@ -13,35 +13,38 @@ function TopBar() {
   };
 
   return (
-    <div className="flex justify-between items-center h-[10%] w-full px-4">
-      <div className="w-[20%]">
+    <header className="flex items-center h-16 px-4 border-b border-border app-region-drag shrink-0">
+      {/* Left Section */}
+      <div className="flex items-center w-1/5">
         <SettingsDrawer />
       </div>
 
-      <div className="w-[60%]">
+      {/* Center Section */}
+      <div className="flex-1 flex-center px-4 app-region-drag">
         <SearchInput />
       </div>
 
-      <div className="w-[20%] flex items-center justify-end gap-3 app-region-no-drag">
+      {/* Right Section */}
+      <div className="flex items-center justify-end w-1/5 gap-2 app-region-no-drag">
         <Button
           variant="ghost"
           size="icon"
           onClick={handleMinimize}
-          className="btn-no-border flex-center bg-transparent hover:bg-transparent cursor-pointer"
+          className="btn-reset text-foreground bg-transparent hover:bg-transparent"
         >
-          <Minimize2 className="h-5 w-5 theme-text" />
+          <Minimize2 className="h-4 w-4" />
+          <span className="sr-only">Minimize</span>
         </Button>
         <Button
           variant="ghost"
           size="icon"
           onClick={handleClose}
-          className="btn-no-border flex-center bg-transparent hover:bg-transparent cursor-pointer"
+          className="btn-reset text-foreground bg-transparent hover:bg-transparent"
         >
-          <X className="h-5 w-5 theme-text" />
+          <X className="h-4 w-4" />
+          <span className="sr-only">Close</span>
         </Button>
       </div>
-    </div>
+    </header>
   );
 }
-
-export default TopBar;

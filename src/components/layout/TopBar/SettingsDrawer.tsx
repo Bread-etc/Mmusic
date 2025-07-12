@@ -7,7 +7,7 @@ import { QrLoginDialog } from "./QrLoginDialog";
 import { toast } from "sonner";
 import { useThemeTransition } from "@/hooks/useThemeTransition";
 
-function SettingsDrawer() {
+export default function SettingsDrawer() {
   const { theme, toggleTheme } = useThemeTransition();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -125,5 +125,3 @@ function SettingsDrawer() {
     </Drawer.Root>
   );
 }
-
-export default SettingsDrawer;

@@ -74,7 +74,7 @@ export function QrLoginDialog({ trigger }: { trigger: React.ReactNode }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="flex flex-col items-center bg-light-bg dark:bg-dark-bg [&>button]:btn-no-border [&>button]:bg-transparent [&>button]:">
+      <DialogContent className="flex flex-col items-center bg-light-bg dark:bg-dark-bg [&>button]:btn-no-border [&>button]:bg-transparent">
         <DialogHeader className="w-full items-center">
           <DialogTitle className="title-large">请扫描二维码登录</DialogTitle>
           <DialogDescription className="text-caption">
