@@ -30,18 +30,18 @@ export default function TopBar() {
           variant="ghost"
           size="icon"
           onClick={handleMinimize}
-          className="btn-reset text-foreground bg-transparent hover:bg-transparent"
+          className="btn-reset text-foreground bg-transparent hover:bg-transparent cursor-pointer group"
         >
-          <Minimize2 className="h-4 w-4" />
+          <Minimize2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-120" />
           <span className="sr-only">Minimize</span>
         </Button>
         <Button
           variant="ghost"
           size="icon"
           onClick={handleClose}
-          className="btn-reset text-foreground bg-transparent hover:bg-transparent"
+          className="btn-reset text-foreground bg-transparent hover:bg-transparent cursor-pointer group"
         >
-          <X className="h-4 w-4" />
+          <X className="h-4 w-4 transition-transform duration-200 group-hover:rotate-90" />
           <span className="sr-only">Close</span>
         </Button>
       </div>
