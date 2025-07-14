@@ -1,9 +1,14 @@
 import { defineConfig, presetWind3 } from "unocss";
-import { presetShadcn } from "unocss-preset-shadcn";
 import presetAnimations from "unocss-preset-animations";
 
 export default defineConfig({
-  presets: [presetWind3(), presetAnimations(), presetShadcn()],
+  presets: [
+    presetWind3(),
+    presetAnimations(),
+    // presetShadcn({
+    //   color: "neutral",
+    // }),
+  ],
   shortcuts: {
     // --------------------
     // 文本样式 (Text Styles)
@@ -15,7 +20,7 @@ export default defineConfig({
       "font-normal text-base font-noto leading-normal text-foreground",
     "text-body-bold": "font-bold text-base font-noto text-foreground",
     "text-caption":
-      "font-normal text-xs font-noto leading-snug text-muted-foreground",
+      "font-normal text-sm font-noto leading-snug text-muted-foreground",
 
     // --------------------
     // 布局 (Layout)

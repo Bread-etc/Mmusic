@@ -1,9 +1,9 @@
-import SettingsDrawer from "./SettingsDrawer";
+import { SettingsDrawer } from "./SettingsDrawer";
 import { Minimize2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "./SearchInput";
 
-export default function TopBar() {
+export function TopBar() {
   const handleMinimize = () => {
     window.ipcRenderer.send("minimize-window");
   };
@@ -25,12 +25,12 @@ export default function TopBar() {
       </div>
 
       {/* Right Section */}
-      <div className="flex items-center justify-end w-1/5 gap-2 app-region-no-drag">
+      <div className="flex items-center justify-end w-1/5 gap-2">
         <Button
           variant="ghost"
           size="icon"
           onClick={handleMinimize}
-          className="btn-reset text-foreground bg-transparent hover:bg-transparent cursor-pointer group"
+          className="btn-reset text-foreground bg-transparent hover:bg-transparent cursor-pointer group app-region-no-drag"
         >
           <Minimize2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-120" />
           <span className="sr-only">Minimize</span>
@@ -39,7 +39,7 @@ export default function TopBar() {
           variant="ghost"
           size="icon"
           onClick={handleClose}
-          className="btn-reset text-foreground bg-transparent hover:bg-transparent cursor-pointer group"
+          className="btn-reset text-foreground bg-transparent hover:bg-transparent cursor-pointer group app-region-no-drag"
         >
           <X className="h-4 w-4 transition-transform duration-200 group-hover:rotate-90" />
           <span className="sr-only">Close</span>

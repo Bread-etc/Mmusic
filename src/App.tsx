@@ -1,6 +1,6 @@
 import "./App.css";
 import { useEffect, useState } from "react";
-import TopBar from "./components/layout/TopBar";
+import { TopBar } from "./components/layout/TopBar";
 import MainContent from "./components/layout/MainContent";
 import Dock from "./components/layout/Dock";
 import { Toaster } from "sonner";

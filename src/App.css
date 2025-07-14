@@ -42,44 +42,44 @@
     "Noto Sans SC", Arial, Helvetica, system-ui, -apple-system, sans-serif;
 
   /* Light Theme Colors */
-  --background: 0 0% 100%;
-  --foreground: 240 10% 3.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 240 10% 3.9%;
-  --primary: 240 5.9% 10%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 240 4.8% 92.9%;      /* <-- 加深 */
-  --secondary-foreground: 240 5.9% 10%;
-  --muted: 240 4.8% 95.9%;
-  --muted-foreground: 240 3.8% 46.1%;
-  --accent: 240 4.8% 95.9%;
-  --accent-foreground: 240 5.9% 10%;
-  --destructive: 0 84.2% 60.2%;    /* <-- 更鲜艳的红色 */
-  --destructive-foreground: 0 0% 98%;
-  --border: 240 5.9% 90%;
-  --input: 240 5.9% 90%;
-  --ring: 240 10% 3.9%;
+  --background: 270 20% 96%;
+  --foreground: 0 0% 20%;
+  --card: 270 15% 92%;
+  --card-foreground: 0 0% 20%;
+  --primary: 262 83% 68%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 270 10% 85%;
+  --secondary-foreground: 0 0% 35%;
+  --muted: 270 12% 88%;
+  --muted-foreground: 220 8% 46%;
+  --accent: 262 83% 68%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 85% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 270 8% 80%;
+  --input: 0 0% 100%;
+  --ring: 262 83% 68%;
 }
 
 .dark {
   /* Dark Theme Colors */
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --primary: 0 0% 98%;
-  --primary-foreground: 240 5.9% 10%;
-  --secondary: 240 3.7% 20.9%;      /* <-- 加深 */
-  --secondary-foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --accent: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 72.2% 50.6%;    /* <-- 更明确的红色 */
+  --background: 220 27% 8%;
+  --foreground: 0 0% 95%;
+  --card: 220 20% 12%;
+  --card-foreground: 0 0% 95%;
+  --primary: 158 64% 52%;
+  --primary-foreground: 220 27% 8%;
+  --secondary: 220 15% 18%;
+  --secondary-foreground: 0 0% 90%;
+  --muted: 220 20% 15%;
+  --muted-foreground: 220 8% 65%;
+  --accent: 158 64% 52%;
+  --accent-foreground: 220 27% 8%;
+  --destructive: 0 85% 60%;
   --destructive-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --ring: 0 0% 98%;
+  --border: 220 13% 25%;
+  --input: 220 20% 16%;
+  --ring: 158 64% 52%;
 }
 
 html,
