@@ -1,33 +1,45 @@
 import { useState } from "react";
 import {
   ChevronDown,
+  ChevronsLeft,
+  ChevronsRight,
   Heart,
   Pause,
   Play,
   Repeat,
   Repeat1,
   Shuffle,
-  SkipBack,
-  SkipForward,
   Volume2,
-  VolumeX,
+  VolumeOff,
 } from "lucide-react";
 import { usePlayerStore } from "@/store/player";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { formatTime } from "@/lib/utils";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+import { Drawer } from "vaul";
 
 // 根据播放模式返回对应的图标
 const PlaybackModeIcon = ({ mode }: { mode: string }) => {
-  if (mode === "single") return <Repeat1 size={20} />;
-  if (mode === "shuffle") return <Shuffle size={20} />;
-  return <Repeat size={20} />;
+  if (mode === "single")
+    return (
+      <Repeat1
+        size={20}
+        className="hover-text-primary transition-colors duration-200"
+      />
+    );
+  if (mode === "shuffle")
+    return (
+      <Shuffle
+        size={20}
+        className="hover-text-primary transition-colors duration-200"
+      />
+    );
+  return (
+    <Repeat
+      size={20}
+      className="hover-text-primary transition-colors duration-200"
+    />
+  );
 };
 
 function Dock() {
@@ -51,7 +63,6 @@ function Dock() {
     cyclePlaybackMode,
     toggleLike,
   } = usePlayerStore();
-
   const currentSong = getCurrentSong();
 
   if (!currentSong) {
@@ -61,38 +72,32 @@ function Dock() {
   const handleProgressChange = (value: number[]) => {
     setCurrentTime(value[0]);
   };
-
   const handleVolumeChange = (value: number[]) => {
     setVolume(value[0]);
   };
-
   const songIsLiked = isLiked(currentSong.id);
 
   return (
-    <Drawer>
-      <div className="app-region-no-drag absolute bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-4xl h-20 px-4 bg-slate-50/60 dark:bg-slate-900/60 backdrop-blur-lg rounded-2xl shadow-lg border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-between">
+    <Drawer.Root>
+      <div className="flex-between app-region-no-drag absolute bottom-5 left-1/2 -translate-x-1/2 w-[95%] px-4 py-2 rounded-2xl shadow-lg backdrop-blur-sm bg-card/20">
         {/* 左侧：歌曲信息和抽屉触发器 */}
-        <DrawerTrigger asChild>
-          <div className="w-64 flex items-center gap-3 cursor-pointer group">
+        <Drawer.Trigger asChild>
+          <div className="w-64 flex items-center gap-4 cursor-pointer group">
             <img
               src={currentSong.cover}
               alt={currentSong.title}
-              className="w-14 h-14 rounded-md object-cover"
+              className="w-12 h-12 rounded-md object-cover"
             />
             <div className="flex flex-col min-w-0">
-              <p className="font-bold text-base truncate">
-                {currentSong.title}
-              </p>
-              <p className="text-sm opacity-80 group-hover:underline truncate">
-                {currentSong.artist}
-              </p>
+              <p className="text-title-small truncate">{currentSong.title}</p>
+              <p className="text-caption truncate">{currentSong.artist}</p>
             </div>
           </div>
-        </DrawerTrigger>
+        </Drawer.Trigger>
 
         {/* 中间：播放控制和进度条 */}
-        <div className="flex-grow flex flex-col items-center justify-center mx-4">
-          <div className="flex items-center gap-6">
+        <div className="flex-grow flex-col-center mx-2">
+          <div className="flex items-center gap-1">
             <Button
               onClick={(e) => {
                 e.stopPropagation();
@@ -100,9 +105,13 @@ function Dock() {
               }}
               size="icon"
               variant="ghost"
-              className="p-2 "
+              className="btn-reset"
             >
-              <SkipBack size={22} />
+              <ChevronsLeft
+                className="hover:text-primary transition-colors duration-200"
+                size={20}
+                strokeWidth={3}
+              />
             </Button>
             <Button
               onClick={(e) => {
@@ -110,12 +119,21 @@ function Dock() {
                 togglePlay();
               }}
               size="icon"
-              className="p-3 w-12 h-12 bg-sky-500 text-white shadow-md hover:scale-105 transition-transform"
+              variant="ghost"
+              className="btn-reset"
             >
               {isPlaying ? (
-                <Pause size={28} />
+                <Pause
+                  className="hover:text-primary transition-colors duration-200"
+                  size={24}
+                  strokeWidth={2}
+                />
               ) : (
-                <Play size={28} className="ml-1" />
+                <Play
+                  className="hover:text-primary transition-colors duration-200"
+                  size={24}
+                  strokeWidth={2}
+                />
               )}
             </Button>
             <Button
@@ -125,13 +143,17 @@ function Dock() {
               }}
               size="icon"
               variant="ghost"
-              className="p-2 "
+              className="btn-reset"
             >
-              <SkipForward size={22} />
+              <ChevronsRight
+                className="hover:text-primary transition-colors duration-200"
+                size={20}
+                strokeWidth={3}
+              />
             </Button>
           </div>
-          <div className="w-full flex items-center gap-2 mt-1">
-            <span className="text-xs  w-10 text-center">
+          <div className="w-full flex items-center gap-2">
+            <span className="text-xs w-8 text-center tracking-wide">
               {formatTime(currentTime)}
             </span>
             <Slider
@@ -141,7 +163,7 @@ function Dock() {
               onValueChange={handleProgressChange}
               className="flex-grow"
             />
-            <span className="text-xs  w-10 text-center">
+            <span className="text-xs w-8 text-center tracking-wide">
               {formatTime(duration)}
             </span>
           </div>
@@ -156,11 +178,11 @@ function Dock() {
             }}
             size="icon"
             variant="ghost"
-            className={`p-1 ${songIsLiked ? "text-red-500" : ""}`}
+            className={`btn-reset ${songIsLiked ? "text-red-500" : ""}`}
           >
             <Heart
               size={20}
-              className={`${songIsLiked ? "fill-current" : ""}`}
+              className={`${songIsLiked ? "fill-current" : ""} hover:fill-current`}
             />
           </Button>
 
@@ -172,14 +194,14 @@ function Dock() {
             }}
             size="icon"
             variant="ghost"
-            className="p-1 "
+            className="btn-reset"
           >
             <PlaybackModeIcon mode={playbackMode} />
           </Button>
 
           {/* 音量控制（悬浮显示） */}
           <div
-            className="relative flex items-center gap-2 w-28"
+            className="relative flex items-center"
             onMouseEnter={() => setVolumeSliderVisible(true)}
             onMouseLeave={() => setVolumeSliderVisible(false)}
           >
@@ -190,23 +212,34 @@ function Dock() {
               }}
               variant="ghost"
               size="icon"
-              className=""
+              className="btn-reset"
             >
               {isMuted || volume === 0 ? (
-                <VolumeX size={20} />
+                <VolumeOff
+                  size={20}
+                  className="hover-text-primary transition-colors duration-200"
+                />
               ) : (
-                <Volume2 size={20} />
+                <Volume2
+                  size={20}
+                  className="hover-text-primary transition-colors duration-200"
+                />
               )}
             </Button>
+
+            {/* 悬浮显示的音量条 */}
             {isVolumeSliderVisible && (
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-full">
-                <Slider
-                  value={isMuted ? [0] : [volume]}
-                  max={1}
-                  step={0.01}
-                  onValueChange={handleVolumeChange}
-                  className="w-full"
-                />
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2">
+                <div className="bg-foreground/10 backdrop-blur-sm p-4 rounded-md shadow-lg flex-center h-32">
+                  <Slider
+                    orientation="vertical"
+                    value={isMuted ? [0] : [volume]}
+                    max={1}
+                    step={0.01}
+                    onValueChange={handleVolumeChange}
+                    className="w-2"
+                  />
+                </div>
               </div>
             )}
           </div>
@@ -214,7 +247,7 @@ function Dock() {
       </div>
 
       {/* 抽屉内容：全屏播放页 */}
-      <DrawerContent className="h-full bg-transparent border-none outline-none">
+      <Drawer.Content className="h-full bg-transparent border-none outline-none">
         <div className="absolute inset-0 w-full h-full -z-20">
           <img
             src={currentSong.cover}
@@ -224,14 +257,14 @@ function Dock() {
           <div className="absolute inset-0 w-full h-full bg-black/50"></div>
         </div>
         <div className="w-full h-full flex flex-col items-center justify-center p-8 text-white">
-          <DrawerClose
+          <Drawer.Close
             asChild
             className="absolute top-6 left-6 app-region-no-drag"
           >
             <Button variant="ghost" size="icon">
               <ChevronDown size={24} />
             </Button>
-          </DrawerClose>
+          </Drawer.Close>
           <img
             src={currentSong.cover}
             alt={currentSong.title}
@@ -242,8 +275,8 @@ function Dock() {
             <p className="text-xl opacity-80 mt-2">{currentSong.artist}</p>
           </div>
         </div>
-      </DrawerContent>
-    </Drawer>
+      </Drawer.Content>
+    </Drawer.Root>
   );
 }
 
