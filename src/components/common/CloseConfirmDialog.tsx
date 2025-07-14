@@ -43,7 +43,7 @@ export function CloseConfirmDialog({
             id="remember-choice"
             checked={rememberChoice}
             onChange={(e) => setRememberChoice(e.target.checked)}
-            className="h-4 w-4 rounded border-primary text-primary focus:ring-0 focus:ring-offset-0"
+            className="h-4 w-4 rounded focus:ring-0 focus:ring-offset-0"
           />
           <label
             htmlFor="remember-choice"
@@ -54,14 +54,14 @@ export function CloseConfirmDialog({
         </div>
         <DialogFooter className="gap-2 sm:justify-end">
           <Button
-            className="btn-reset"
+            className="btn-reset font-bold"
             variant="secondary"
             onClick={() => handleConfirm("minimize")}
           >
             最小化到托盘
           </Button>
           <Button
-            className="btn-reset"
+            className="btn-reset font-bold"
             variant="destructive"
             onClick={() => handleConfirm("exit")}
           >

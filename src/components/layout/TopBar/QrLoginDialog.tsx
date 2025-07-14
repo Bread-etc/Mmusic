@@ -1,7 +1,3 @@
-/**
- * 二维码扫描 Dialog
- * @function getQrCode 获取二维码
- */
 import {
   Dialog,
   DialogContent,
@@ -74,14 +70,16 @@ export function QrLoginDialog({ trigger }: { trigger: React.ReactNode }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="flex flex-col items-center bg-background text-foreground [&>button]:btn-no-border [&>button]:bg-transparent">
+      <DialogContent className="flex flex-col items-center">
         <DialogHeader className="w-full items-center">
-          <DialogTitle className="title-large">请扫描二维码登录</DialogTitle>
+          <DialogTitle className="text-title-large">
+            请扫描二维码登录
+          </DialogTitle>
           <DialogDescription className="text-caption">
             登录失败请重新打开，验证时间稍长
           </DialogDescription>
         </DialogHeader>
-        <div className="p-2 rounded-lg bg-white">
+        <div className="bg-white p-2 rounded-lg">
           {qrCodeUrl ? (
             <QRCodeSVG
               id="qrCode"

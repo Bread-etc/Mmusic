@@ -21,7 +21,7 @@ export function SettingsDrawer() {
       <Drawer.Trigger asChild>
         <Button
           size="icon"
-          className="btn-reset app-region-no-drag bg-primary text-primary-foreground"
+          className="btn-reset app-region-no-drag"
           disabled={isOpen}
         >
           <Music2 className="h-5 w-5" strokeWidth={3} />
@@ -38,7 +38,7 @@ export function SettingsDrawer() {
           <div className="flex justify-center py-3">
             <Drawer.Handle
               className="bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500
-              cursor-grab active:cursor-grabbing app-region-no-drag transition-colors duration-150"
+              cursor-grab active:cursor-grabbing app-region-no-drag transition-colors duration-200"
             />
           </div>
 

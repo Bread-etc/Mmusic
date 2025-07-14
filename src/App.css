@@ -42,20 +42,20 @@
     "Noto Sans SC", Arial, Helvetica, system-ui, -apple-system, sans-serif;
 
   /* Light Theme Colors */
-  --background: 270 20% 96%;
-  --foreground: 0 0% 20%;
-  --card: 270 15% 92%;
-  --card-foreground: 0 0% 20%;
-  --primary: 262 83% 68%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 270 10% 85%;
-  --secondary-foreground: 0 0% 35%;
+  --background: 270 20% 96%; /* 白色背景 */
+  --foreground: 0 0% 20%; /* 浅黑色字体 */
+  --card: 275 31% 83%; /* 浅紫色卡片背景 */
+  --card-foreground: 0 0% 30%; /* 浅黑色字体 in card */
+  --primary: 262 83% 55%; /* 紫色主题色 */
+  --primary-foreground: 0 0% 100%; /* 白色字体 in primary */
+  --secondary: 0 0% 85%; /* 灰色次级 */
+  --secondary-foreground: 0 0% 30%; /* 灰色次级字体 */
   --muted: 270 12% 88%;
   --muted-foreground: 220 8% 46%;
   --accent: 262 83% 68%;
-  --accent-foreground: 0 0% 100%;
-  --destructive: 0 85% 55%;
-  --destructive-foreground: 0 0% 100%;
+  --accent-foreground: 0 0% 10%; /* 深黑色hover字体 */
+  --destructive: 0 85% 50%; /* 深红色 破坏 背景 */
+  --destructive-foreground: 0 0% 100%; /* 白色字体 in destructive */
   --border: 270 8% 80%;
   --input: 0 0% 100%;
   --ring: 262 83% 68%;
@@ -63,20 +63,20 @@
 
 .dark {
   /* Dark Theme Colors */
-  --background: 220 27% 8%;
-  --foreground: 0 0% 95%;
-  --card: 220 20% 12%;
-  --card-foreground: 0 0% 95%;
-  --primary: 158 64% 52%;
-  --primary-foreground: 220 27% 8%;
-  --secondary: 220 15% 18%;
-  --secondary-foreground: 0 0% 90%;
+  --background: 220 27% 10%; /* 黑色背景 */
+  --foreground: 0 0% 80%; /* 浅白色字体 */
+  --card: 220 10% 20%; /* 浅灰蓝色卡片背景 */
+  --card-foreground: 0 0% 90%; /* 浅白色字体 in card */
+  --primary: 147 50% 36%; /* 绿色主题色 */
+  --primary-foreground: 0 0% 100%; /* 白色字体 in primary */
+  --secondary: 220 15% 18%; /* 灰色次级 */
+  --secondary-foreground: 0 0% 90%; /* 灰色次级字体 */
   --muted: 220 20% 15%;
   --muted-foreground: 220 8% 65%;
   --accent: 158 64% 52%;
-  --accent-foreground: 220 27% 8%;
-  --destructive: 0 85% 60%;
-  --destructive-foreground: 0 0% 98%;
+  --accent-foreground: 0 0% 90%; /* 深白色hover字体 */
+  --destructive: 0 85% 30%; /* 深红色 破坏 背景 */
+  --destructive-foreground: 0 0% 100%; /* 白色字体 in destructive */
   --border: 220 13% 25%;
   --input: 220 20% 16%;
   --ring: 158 64% 52%;
