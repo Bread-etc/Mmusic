@@ -9,9 +9,11 @@
 - [x] 扫码登录获取 Cookie
 - [ ] 其他平台扫码登录获取 Cookie
 - [x] 浅深色模式切换
+- [ ] 喜欢的歌曲（歌单功能）
 
 ## Improveable Detail Area
 
-- [ ] `SongCard`下playerIcon动画，hover动画
+- [x] `SongCard`下playerIcon动画，hover动画
 - [ ] `Sonner/Toast`样式
-- [ ] 深浅主题下主题色`primary`
+- [x] 深浅主题下主题色`primary`
+- [ ] 加入路由 -> 更多其他功能
