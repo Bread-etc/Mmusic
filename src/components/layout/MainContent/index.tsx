@@ -9,7 +9,7 @@ import { SongCard } from "./SongCard";
 import "react-virtualized/styles.css";
 import { AutoSizer, List, ListRowProps } from "react-virtualized";
 
-export default function MainContent() {
+export function MainContent() {
   const { keyword } = useSearchResultStore();
 
   const [songs, setSongs] = useState<NeteaseSongItem[]>([]);
@@ -109,8 +109,10 @@ export default function MainContent() {
       }
       if (error) {
         return (
-          <div className="flex-center h-full title-small opacity-50">
-            {error}
+          <div className="flex-center h-full">
+            <span className="text-title-small mb-16 tracking-[.1rem]">
+              {error}
+            </span>
           </div>
         );
       }
@@ -122,7 +124,7 @@ export default function MainContent() {
                 width={width}
                 height={height}
                 rowCount={songs.length}
-                rowHeight={64}
+                rowHeight={56}
                 rowRenderer={rowRenderer}
                 onRowsRendered={({ stopIndex }) => {
                   if (hasMore && stopIndex >= songs.length - 5) {
@@ -138,19 +140,23 @@ export default function MainContent() {
       // 如果没有歌曲且没有错误，可能是因为没搜到，显示错误信息
       if (error)
         return (
-          <div className="flex-center h-full title-small opacity-50">
-            {error}
+          <div className="flex-center h-full">
+            <span className="text-title-small mb-16 tracking-[.1rem]">
+              {error}
+            </span>
           </div>
         );
     }
 
-    // 2. 默认初始界面
+    // 默认初始界面
     return (
-      <div className="flex-center h-full title-small opacity-50">
-        搜索你喜欢的音乐
-      </div>
+      <main className="flex-center h-full">
+        <span className="text-title-small mb-16 tracking-[.1rem]">
+          搜索你喜欢的音乐
+        </span>
+      </main>
     );
   };
 
-  return <div className="flex-grow w-full pt-2 min-h-0">{renderContent()}</div>;
+  return <main className="flex-grow w-full min-h-0">{renderContent()}</main>;
 }

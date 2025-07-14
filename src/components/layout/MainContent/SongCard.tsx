@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play, Volume2, LoaderCircle } from "lucide-react";
+import { AudioLines, AudioWaveform, LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { usePlayerStore } from "@/store/player";
@@ -16,7 +16,7 @@ interface SongCardProps {
 export function SongCard({ song, index }: SongCardProps) {
   const [isFetchingUrl, setIsFetchingUrl] = useState(false);
 
-  // 正确地从 Zustand store 中选择状态，避免不必要的重渲染
+  // 从 Zustand store 中选择状态，避免不必要的重渲染
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const currentSongId = usePlayerStore((state) => state.currentSong()?.id);
   const playSongNow = usePlayerStore((state) => state.playSongNow);
@@ -40,7 +40,7 @@ export function SongCard({ song, index }: SongCardProps) {
       const picUrl = resDetail.data.songs[0].al.picUrl;
 
       if (!songUrlData || !songUrlData.url) {
-        toast.error("获取播放地址失败，可能需要VIP权限");
+        toast.error("获取播放地址失败，可能需要VIP");
         return;
       }
 
@@ -56,45 +56,38 @@ export function SongCard({ song, index }: SongCardProps) {
 
   return (
     <div
-      className={`flex items-center p-2 rounded-lg cursor-pointer transition-colors duration-200 ${
-        isCurrentSong
-          ? "bg-sky-100 dark:bg-sky-900/50"
-          : "hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
+      className={`flex items-center p-2 rounded-xl cursor-pointer transition-colors duration-200 ${
+        isCurrentSong ? "bg-accent" : "hover:bg-muted"
       }`}
       onClick={handlePlay}
     >
-      {/* 左侧：索引或播放/加载图标 */}
-      <div className="w-10 flex-center text-sm  opacity-60">
+      {/* 左侧：播放 - 索引 */}
+      <div className="w-10 flex-center text-sm">
         {isFetchingUrl ? (
-          <LoaderCircle className="w-5 h-5 animate-spin text-sky-500" />
+          <LoaderCircle className="w-5 h-5 animate-spin text-primary" />
         ) : isCurrentSong && isPlaying ? (
-          <Volume2 className="w-5 h-5 text-sky-500" />
+          <AudioWaveform className="w-5 h-5 text-primary" />
+        ) : isCurrentSong ? (
+          <AudioLines className="w-5 h-5 text-primary" />
         ) : (
-          // 默认显示索引，当鼠标悬浮时隐藏
-          <span className="group-hover:hidden">{index + 1}</span>
+          <span className="font-bold">{index + 1}</span>
         )}
-        {/* 鼠标悬浮时显示播放按钮 (如果不是加载中或正在播放) */}
-        <Play
-          className={`w-5 h-5 hidden group-hover:block  opacity-80${
-            isFetchingUrl || (isCurrentSong && isPlaying) ? " !hidden" : ""
-          }`}
-        />
       </div>
 
       {/* 中部：歌曲信息 */}
-      <div className="flex-1 min-w-0 mx-2">
+      <div className="flex-1 min-w-0 mx-1">
         <p
-          className={`font-medium truncate ${
-            isCurrentSong ? "text-sky-600 dark:text-sky-400" : ""
+          className={`text-title-small truncate ${
+            isCurrentSong ? "text-primary" : ""
           }`}
         >
           {songInfo.title}
         </p>
-        <p className="text-sm  opacity-70 truncate">{songInfo.artist}</p>
+        <p className="text-caption text-xs">{songInfo.artist}</p>
       </div>
 
       {/* 右侧：歌曲时长 */}
-      <div className="w-16 text-right text-sm  opacity-70">
+      <div className="w-16 text-right text-xs tracking-wider">
         {formatTime(songInfo.duration)}
       </div>
     </div>

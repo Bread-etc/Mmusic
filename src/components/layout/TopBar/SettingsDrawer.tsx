@@ -2,14 +2,12 @@ import { BrushCleaning, Moon, Music2, QrCode, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Drawer } from "vaul";
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
 import { QrLoginDialog } from "./QrLoginDialog";
 import { toast } from "sonner";
 import { useThemeTransition } from "@/hooks/useThemeTransition";
 
 export function SettingsDrawer() {
   const { theme, toggleTheme } = useThemeTransition();
-  const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = async () => {
     await window.http.setCookie("netease", "");
@@ -17,13 +15,9 @@ export function SettingsDrawer() {
   };
 
   return (
-    <Drawer.Root onOpenChange={(open) => setIsOpen(open)}>
+    <Drawer.Root>
       <Drawer.Trigger asChild>
-        <Button
-          size="icon"
-          className="btn-reset app-region-no-drag"
-          disabled={isOpen}
-        >
+        <Button size="icon" className="btn-reset app-region-no-drag">
           <Music2 className="h-5 w-5" strokeWidth={3} />
         </Button>
       </Drawer.Trigger>
