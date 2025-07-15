@@ -42,7 +42,7 @@ const PlaybackModeIcon = ({ mode }: { mode: string }) => {
   );
 };
 
-function Dock() {
+export function Dock() {
   const [isVolumeSliderVisible, setVolumeSliderVisible] = useState(false);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [isShadowVisible, setIsShadowVisible] = useState(true);
@@ -126,7 +126,7 @@ function Dock() {
               className="btn-reset"
             >
               <ChevronsLeft
-                className="hover:text-primary transition-colors duration-200"
+                className="cursor-pointer hover:text-primary transition-colors duration-200"
                 size={20}
                 strokeWidth={3}
               />
@@ -142,15 +142,13 @@ function Dock() {
             >
               {isPlaying ? (
                 <Pause
-                  className="hover:text-primary transition-colors duration-200"
+                  className="cursor-pointer fill-current text-primary"
                   size={24}
-                  strokeWidth={2}
                 />
               ) : (
                 <Play
-                  className="hover:text-primary transition-colors duration-200"
+                  className="cursor-pointer fill-current text-primary"
                   size={24}
-                  strokeWidth={2}
                 />
               )}
             </Button>
@@ -161,7 +159,7 @@ function Dock() {
               }}
               size="icon"
               variant="ghost"
-              className="btn-reset"
+              className="btn-reset cursor-pointer"
             >
               <ChevronsRight
                 className="hover:text-primary transition-colors duration-200"
@@ -188,7 +186,7 @@ function Dock() {
         </div>
 
         {/* 右侧：其他功能 */}
-        <div className="w-64 flex items-center justify-end gap-4">
+        <div className="w-64 flex-center gap-4">
           <Button
             onClick={(e) => {
               e.stopPropagation();
@@ -196,7 +194,7 @@ function Dock() {
             }}
             size="icon"
             variant="ghost"
-            className={`btn-reset ${songIsLiked ? "text-red-500" : ""}`}
+            className={`cursor-pointer btn-reset ${songIsLiked ? "text-red-500" : ""}`}
           >
             <Heart
               size={20}
@@ -212,7 +210,7 @@ function Dock() {
             }}
             size="icon"
             variant="ghost"
-            className="btn-reset"
+            className="cursor-pointer btn-reset"
           >
             <PlaybackModeIcon mode={playbackMode} />
           </Button>
@@ -230,7 +228,7 @@ function Dock() {
               }}
               variant="ghost"
               size="icon"
-              className="btn-reset"
+              className="cursor-pointer btn-reset"
             >
               {isMuted || volume === 0 ? (
                 <VolumeOff
@@ -266,7 +264,7 @@ function Dock() {
 
       {/* 抽屉内容：全屏播放页 */}
       <Drawer.Portal>
-        <Drawer.Overlay className="fixed inset-0 z-50 bg-black rounded-[10px]" />
+        <Drawer.Overlay className="fixed inset-0 z-50 bg-background rounded-[10px]" />
         <Drawer.Content className="fixed inset-0 z-50 flex flex-col h-full outline-none">
           <div className="absolute inset-0 -z-10 rounded-[10px] overflow-hidden">
             <img
@@ -296,7 +294,9 @@ function Dock() {
               className="w-70 h-70 rounded-lg object-cover shadow-2xl"
             />
             <div className="mt-4 text-center">
-              <Drawer.Title>{currentSong.title}</Drawer.Title>
+              <Drawer.Title className="font-noto font-extrabold tracking-wide">
+                {currentSong.title}
+              </Drawer.Title>
               <Drawer.Description className="mt-2 opacity-80">
                 {currentSong.artist}
               </Drawer.Description>
@@ -307,5 +307,3 @@ function Dock() {
     </Drawer.Root>
   );
 }
-
-export default Dock;

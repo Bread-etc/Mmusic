@@ -46,6 +46,20 @@ export function qrCodeCheck(uniKey: string) {
 }
 
 /**
+ * 查询登录状态
+ */
+export function getLoginStatusNetease() {
+  return httpRequest({
+    url: "/login/status",
+    method: "GET",
+    params: {},
+    platform: "netease",
+    showLoading: false,
+    showError: false,
+  });
+}
+
+/**
  * 搜索歌曲
  * @param keywords 搜索关键词
  * @param offset 分页偏移量
@@ -98,3 +112,5 @@ export function songUrlNetease(id: string, quality: NeteaseSongQuality) {
     showError: true,
   });
 }
+
+

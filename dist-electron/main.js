@@ -26997,6 +26997,7 @@ function createWindow() {
     webPreferences: {
       preload: path$1.join(__dirname, "preload.mjs"),
       nodeIntegration: true,
+      // 开启多线程
       contextIsolation: true,
       webSecurity: true,
       enableWebSQL: false,

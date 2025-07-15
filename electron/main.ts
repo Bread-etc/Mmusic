@@ -72,7 +72,7 @@ function createWindow() {
     icon: path.join(process.env.VITE_PUBLIC, "icon.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.mjs"),
-      nodeIntegration: true,
+      nodeIntegration: true, // 开启多线程
       contextIsolation: true,
       webSecurity: true,
       enableWebSQL: false,

@@ -9,8 +9,10 @@ import {
 import {
   generateKey,
   generateQrCode,
+  getLoginStatusNetease,
   qrCodeCheck,
 } from "@/lib/music/neteaseService";
+import { useUserInfoStore } from "@/store/userInfo";
 import { QRCodeSVG } from "qrcode.react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -20,6 +22,7 @@ export function QrLoginDialog({ trigger }: { trigger: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const [uniKey, setUniKey] = useState("");
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const setUserInfo = useUserInfoStore((state) => state.setInfo);
 
   // 获取二维码
   const getQrCode = async () => {
@@ -39,7 +42,6 @@ export function QrLoginDialog({ trigger }: { trigger: React.ReactNode }) {
     if (open && uniKey) {
       timerRef.current = setInterval(async () => {
         const res = await qrCodeCheck(uniKey);
-        console.log(res);
         if (
           res.status === 200 &&
           res.data &&
@@ -47,6 +49,8 @@ export function QrLoginDialog({ trigger }: { trigger: React.ReactNode }) {
           res.data.cookie
         ) {
           await window.http.setCookie("netease", res.data.cookie);
+          const status = await getLoginStatusNetease();
+          if (status.success && status.status === 200) setUserInfo(status);
           toast.success("登录成功！");
           setOpen(false);
           clearInterval(timerRef.current!);

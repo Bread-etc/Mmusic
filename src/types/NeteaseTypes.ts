@@ -82,3 +82,22 @@ export type NeteaseSongQuality =
   | "jyeffect" // 鲸云臻音
   | "sky" // 鲸云母带
   | "jymaster"; // 鲸云母带Pro
+
+/** 用户信息  **/
+export interface NeteaseUserInfo {
+  account: {
+    anonimousUser: boolean;
+    ban: number;
+    id: number;
+    paidFee: boolean;
+    [key: string]: any;
+  };
+  code: number;
+  profile: {
+    avatarUrl: string;
+    backgroundImgUrl: string;
+    defaultAvatar: boolean;
+    nickname: string;
+    [key: string]: any;
+  };
+}

@@ -2,7 +2,7 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import { TopBar } from "./components/layout/TopBar";
 import { MainContent } from "./components/layout/MainContent";
-import Dock from "./components/layout/Dock";
+import { Dock } from "./components/layout/Dock";
 import { Toaster } from "sonner";
 import { GlobalLoading } from "./components/common/GlobalLoading";
 import { AudioPlayer } from "./components/common/AudioPlayer";

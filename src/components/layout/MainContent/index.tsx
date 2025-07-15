@@ -150,7 +150,7 @@ export function MainContent() {
     // 默认初始界面
     return (
       <main className="flex-center h-full">
-        <span className="text-title-small mb-16 tracking-[.1rem]">
+        <span className="text-title-large mb-16 font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-green-500">
           搜索你喜欢的音乐
         </span>
       </main>
