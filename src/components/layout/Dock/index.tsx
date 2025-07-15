@@ -66,6 +66,7 @@ function Dock() {
     toggleLike,
   } = usePlayerStore();
   const currentSong = getCurrentSong();
+
   const handleOpenChange = (open: boolean) => {
     setDrawerOpen(open);
     if (open) {
