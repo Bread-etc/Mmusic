@@ -12,7 +12,6 @@ export function AudioPlayer() {
   const seekTime = usePlayerStore((state) => state.currentTime); // 用于拖动
   const setCurrentTime = usePlayerStore((state) => state.setCurrentTime);
   const setDuration = usePlayerStore((state) => state.setDuration);
-  const playNext = usePlayerStore((state) => state.playNext);
 
   // 编写 Effect Hooks，将 Store 状态同步到 <audio> 元素
 
@@ -75,7 +74,15 @@ export function AudioPlayer() {
 
   // 当音频播放结束时，调用 action 播放下一首
   const handleEnded = () => {
-    playNext();
+    const { playbackMode, playNext } = usePlayerStore.getState();
+    if (playbackMode === "single") {
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play();
+      }
+    } else {
+      playNext();
+    }
   };
 
   return (

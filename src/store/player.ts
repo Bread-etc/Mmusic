@@ -127,7 +127,9 @@ export const usePlayerStore = create<PlayerStore>()(
 
       setPlaylist: (songs, playIndex = 0) => {
         // 利用 Map 的特性根据歌曲ID进行去重
-        const uniqueSongs = Array.from(new Map(songs.map(song => [song.id, song])).values());
+        const uniqueSongs = Array.from(
+          new Map(songs.map((song) => [song.id, song])).values()
+        );
 
         const newShuffledPlaylist = shuffleArray(uniqueSongs);
         set({
@@ -151,17 +153,15 @@ export const usePlayerStore = create<PlayerStore>()(
           return;
         }
 
-        const nextIndex = currentIndex + 1;
-        if (nextIndex < currentPlaylist.length) {
-          set({ currentIndex: nextIndex, currentTime: 0, isPlaying: true });
-        } else {
-          set({ currentIndex: 0, currentTime: 0, isPlaying: true });
-        }
+        const nextIndex = (currentIndex + 1) % currentPlaylist.length;
+        set({ currentIndex: nextIndex, currentTime: 0, isPlaying: true });
       },
 
       playPrev: () => {
-        const { playlist, shuffledPlaylist, currentIndex, playbackMode } = get();
-        const currentPlaylist = playbackMode === "shuffle" ? shuffledPlaylist : playlist;
+        const { playlist, shuffledPlaylist, currentIndex, playbackMode } =
+          get();
+        const currentPlaylist =
+          playbackMode === "shuffle" ? shuffledPlaylist : playlist;
         if (currentPlaylist.length === 0) return;
 
         const prevIndex = currentIndex - 1;
@@ -169,7 +169,11 @@ export const usePlayerStore = create<PlayerStore>()(
           set({ currentIndex: prevIndex, currentTime: 0, isPlaying: true });
         } else {
           // 如果是第一首，则循环到列表的最后一首
-          set({ currentIndex: currentPlaylist.length - 1, currentTime: 0, isPlaying: true });
+          set({
+            currentIndex: currentPlaylist.length - 1,
+            currentTime: 0,
+            isPlaying: true,
+          });
         }
       },
 

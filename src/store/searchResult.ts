@@ -1,9 +1,9 @@
 import { create } from "zustand";
-import type { NeteaseResultType } from "@/types/NeteaseTypes";
+import type { NeteaseSearchResult } from "@/types/NeteaseTypes";
 
 interface SearchResultState {
-  neteaseResults: NeteaseResultType | null;
-  setNeteaseResults: (results: NeteaseResultType | null) => void;
+  neteaseResults: NeteaseSearchResult | null;
+  setNeteaseResults: (results: NeteaseSearchResult | null) => void;
   keyword: string;
   setKeyword: (kw: string) => void;
 }

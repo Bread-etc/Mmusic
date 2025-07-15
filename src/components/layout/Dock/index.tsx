@@ -279,7 +279,7 @@ function Dock() {
           <div className="relative flex-center h-full w-full flex-col text-white">
             <Drawer.Close
               asChild
-              className="absolute top-4 left-4 app-region-no-drag"
+              className="absolute top-4 left-4 app-region-no-drag cursor-pointer"
             >
               <Button
                 variant="ghost"
