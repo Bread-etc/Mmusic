@@ -56,7 +56,7 @@ function App() {
         <MainContent />
         <Dock />
         {/* 提示 Toast */}
-        <Toaster position="top-right" richColors duration={1000} />
+        <Toaster position="top-right" richColors duration={2000} />
         {/* 全局加载 Loading */}
         <GlobalLoading />
         {/* 播放器 AudioPlayer */}

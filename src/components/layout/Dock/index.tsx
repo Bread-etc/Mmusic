@@ -15,7 +15,7 @@ import {
 import { usePlayerStore } from "@/store/player";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { formatTime } from "@/lib/utils";
+import { cn, formatTime } from "@/lib/utils";
 import { Drawer } from "vaul";
 
 // 根据播放模式返回对应的图标
@@ -44,6 +44,8 @@ const PlaybackModeIcon = ({ mode }: { mode: string }) => {
 
 function Dock() {
   const [isVolumeSliderVisible, setVolumeSliderVisible] = useState(false);
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [isShadowVisible, setIsShadowVisible] = useState(true);
 
   const {
     currentSong: getCurrentSong,
@@ -64,6 +66,16 @@ function Dock() {
     toggleLike,
   } = usePlayerStore();
   const currentSong = getCurrentSong();
+  const handleOpenChange = (open: boolean) => {
+    setDrawerOpen(open);
+    if (open) {
+      setIsShadowVisible(false);
+    } else {
+      setTimeout(() => {
+        setIsShadowVisible(true);
+      }, 500);
+    }
+  };
 
   if (!currentSong) {
     return null;
@@ -78,8 +90,13 @@ function Dock() {
   const songIsLiked = isLiked(currentSong.id);
 
   return (
-    <Drawer.Root>
-      <div className="flex-between app-region-no-drag absolute bottom-5 left-1/2 -translate-x-1/2 w-[95%] px-4 py-2 rounded-2xl shadow-lg backdrop-blur-sm bg-card/20">
+    <Drawer.Root open={isDrawerOpen} onOpenChange={handleOpenChange}>
+      <div
+        className={cn(
+          "flex-between app-region-no-drag absolute bottom-5 left-1/2 -translate-x-1/2 w-[95%] px-4 py-2 rounded-2xl shadow-lg backdrop-blur-sm bg-card/20 transition-shadow duration-300",
+          { "shadow-lg": isShadowVisible }
+        )}
+      >
         {/* 左侧：歌曲信息和抽屉触发器 */}
         <Drawer.Trigger asChild>
           <div className="w-64 flex items-center gap-4 cursor-pointer group">
@@ -247,35 +264,45 @@ function Dock() {
       </div>
 
       {/* 抽屉内容：全屏播放页 */}
-      <Drawer.Content className="h-full bg-transparent border-none outline-none">
-        <div className="absolute inset-0 w-full h-full -z-20">
-          <img
-            src={currentSong.cover}
-            className="w-full h-full object-cover blur-3xl scale-110"
-            alt="background"
-          />
-          <div className="absolute inset-0 w-full h-full bg-black/50"></div>
-        </div>
-        <div className="w-full h-full flex flex-col items-center justify-center p-8 text-white">
-          <Drawer.Close
-            asChild
-            className="absolute top-6 left-6 app-region-no-drag"
-          >
-            <Button variant="ghost" size="icon">
-              <ChevronDown size={24} />
-            </Button>
-          </Drawer.Close>
-          <img
-            src={currentSong.cover}
-            alt={currentSong.title}
-            className="w-80 h-80 rounded-lg shadow-2xl object-cover"
-          />
-          <div className="text-center mt-8">
-            <h2 className="text-3xl font-bold">{currentSong.title}</h2>
-            <p className="text-xl opacity-80 mt-2">{currentSong.artist}</p>
+      <Drawer.Portal>
+        <Drawer.Overlay className="fixed inset-0 z-50 bg-black rounded-[10px]" />
+        <Drawer.Content className="fixed inset-0 z-50 flex flex-col h-full outline-none">
+          <div className="absolute inset-0 -z-10 rounded-[10px] overflow-hidden">
+            <img
+              src={currentSong.cover}
+              className="w-full h-full object-cover blur-3xl scale-120"
+              alt="background"
+            />
+            <div className="absolute inset-0 w-full h-full bg-black/20" />
           </div>
-        </div>
-      </Drawer.Content>
+
+          <div className="relative flex-center h-full w-full flex-col text-white">
+            <Drawer.Close
+              asChild
+              className="absolute top-4 left-4 app-region-no-drag"
+            >
+              <Button
+                variant="ghost"
+                size="icon"
+                className="btn-reset text-primary-foreground hover:text-primary transition-colors duration-200"
+              >
+                <ChevronDown size={24} />
+              </Button>
+            </Drawer.Close>
+            <img
+              src={currentSong.cover}
+              alt={currentSong.title}
+              className="w-70 h-70 rounded-lg object-cover shadow-2xl"
+            />
+            <div className="mt-4 text-center">
+              <Drawer.Title>{currentSong.title}</Drawer.Title>
+              <Drawer.Description className="mt-2 opacity-80">
+                {currentSong.artist}
+              </Drawer.Description>
+            </div>
+          </div>
+        </Drawer.Content>
+      </Drawer.Portal>
     </Drawer.Root>
   );
 }

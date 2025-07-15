@@ -48,7 +48,6 @@ export function MainContent() {
           }
         }
       } catch (err) {
-        toast.error("搜索失败，请检查网络连接");
         setError("搜索出错了");
       } finally {
         setIsLoading(false);
@@ -110,7 +109,7 @@ export function MainContent() {
       if (error) {
         return (
           <div className="flex-center h-full">
-            <span className="text-title-small mb-16 tracking-[.1rem]">
+            <span className="text-title-small mb-16 tracking-[.1rem] text-destructive">
               {error}
             </span>
           </div>
@@ -141,7 +140,7 @@ export function MainContent() {
       if (error)
         return (
           <div className="flex-center h-full">
-            <span className="text-title-small mb-16 tracking-[.1rem]">
+            <span className="text-title-small mb-16 tracking-[.1rem]  text-destructive">
               {error}
             </span>
           </div>

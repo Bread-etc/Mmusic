@@ -18,7 +18,7 @@ export async function httpRequest<T = any>(config: RequestConfig): Promise<T> {
   try {
     const res = await window.http.request(config);
     if (!res.success && config.showError !== false) {
-      toast.error("请求失败");
+      toast.error("请求失败，请检查网络连接！");
     }
     return res;
   } catch (error: any) {
