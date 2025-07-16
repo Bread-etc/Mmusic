@@ -5,20 +5,38 @@ import { Separator } from "@/components/ui/separator";
 import { QrLoginDialog } from "./QrLoginDialog";
 import { toast } from "sonner";
 import { useThemeTransition } from "@/hooks/useThemeTransition";
+import { useUserInfoStore } from "@/store/userInfo";
+import { usePlayerStore } from "@/store/player";
 
 export function SettingsDrawer() {
   const { theme, toggleTheme } = useThemeTransition();
+  const { profile, clearProfile } = useUserInfoStore();
+  const isPlaying = usePlayerStore((state) => state.isPlaying);
 
   const handleLogout = async () => {
     await window.http.setCookie("netease", "");
+    clearProfile();
     toast.success("清除Cookie成功！");
   };
 
   return (
     <Drawer.Root>
       <Drawer.Trigger asChild>
-        <Button size="icon" className="btn-reset app-region-no-drag">
-          <Music2 className="h-5 w-5" strokeWidth={3} />
+        <Button
+          size="icon"
+          className={`btn-reset app-region-no-drag animate-[spin_2s_linear_infinite] ${isPlaying ? "animate-running" : "animate-paused"} hover:animate-paused`}
+        >
+          {profile ? (
+            <div className="flex-center gap-2 cursor-pointer">
+              <img
+                src={profile.profile.avatarUrl}
+                alt="avatarUrl"
+                className="w-full h-full object-cover rounded-full"
+              />
+            </div>
+          ) : (
+            <Music2 className="h-5 w-5" strokeWidth={3} />
+          )}
         </Button>
       </Drawer.Trigger>
       <Drawer.Portal>

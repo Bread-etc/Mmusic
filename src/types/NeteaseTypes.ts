@@ -84,7 +84,7 @@ export type NeteaseSongQuality =
   | "jymaster"; // 鲸云母带Pro
 
 /** 用户信息  **/
-export interface NeteaseUserInfo {
+export interface NeteaseUserProfile {
   account: {
     anonimousUser: boolean;
     ban: number;
