@@ -30,7 +30,7 @@ export function TopBar() {
           variant="ghost"
           size="icon"
           onClick={handleMinimize}
-          className="btn-reset text-foreground cursor-pointer app-region-no-drag group"
+          className="btn-reset text-foreground app-region-no-drag group"
         >
           <Minimize2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-120" />
           <span className="sr-only">Minimize</span>
@@ -39,7 +39,7 @@ export function TopBar() {
           variant="ghost"
           size="icon"
           onClick={handleClose}
-          className="btn-reset text-foreground cursor-pointer app-region-no-drag group"
+          className="btn-reset text-foreground app-region-no-drag group"
         >
           <X className="h-4 w-4 transition-transform duration-200 group-hover:rotate-90" />
           <span className="sr-only">Close</span>

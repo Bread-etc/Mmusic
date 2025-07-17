@@ -43,11 +43,11 @@ export function CloseConfirmDialog({
             id="remember-choice"
             checked={rememberChoice}
             onChange={(e) => setRememberChoice(e.target.checked)}
-            className="h-4 w-4 rounded focus:ring-0 focus:ring-offset-0"
+            className="h-4 w-4 rounded focus:ring-0 focus:ring-offset-0 cursor-pointer"
           />
           <label
             htmlFor="remember-choice"
-            className="text-sm font-medium leading-none text-body"
+            className="text-sm font-medium leading-none text-body cursor-pointer"
           >
             记住我的选择
           </label>

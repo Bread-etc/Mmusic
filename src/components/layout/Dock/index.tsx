@@ -126,7 +126,7 @@ export function Dock() {
               className="btn-reset"
             >
               <ChevronsLeft
-                className="cursor-pointer hover:text-primary transition-colors duration-200"
+                className="hover:text-primary transition-colors duration-200"
                 size={20}
                 strokeWidth={3}
               />
@@ -141,15 +141,9 @@ export function Dock() {
               className="btn-reset"
             >
               {isPlaying ? (
-                <Pause
-                  className="cursor-pointer fill-current text-primary"
-                  size={24}
-                />
+                <Pause className="fill-current text-primary" size={24} />
               ) : (
-                <Play
-                  className="cursor-pointer fill-current text-primary"
-                  size={24}
-                />
+                <Play className="fill-current text-primary" size={24} />
               )}
             </Button>
             <Button
@@ -159,7 +153,7 @@ export function Dock() {
               }}
               size="icon"
               variant="ghost"
-              className="btn-reset cursor-pointer"
+              className="btn-reset"
             >
               <ChevronsRight
                 className="hover:text-primary transition-colors duration-200"
@@ -194,7 +188,7 @@ export function Dock() {
             }}
             size="icon"
             variant="ghost"
-            className={`cursor-pointer btn-reset ${songIsLiked ? "text-red-500" : ""}`}
+            className={`btn-reset ${songIsLiked ? "text-red-500" : ""}`}
           >
             <Heart
               size={20}
@@ -210,7 +204,7 @@ export function Dock() {
             }}
             size="icon"
             variant="ghost"
-            className="cursor-pointer btn-reset"
+            className="btn-reset"
           >
             <PlaybackModeIcon mode={playbackMode} />
           </Button>
@@ -228,7 +222,7 @@ export function Dock() {
               }}
               variant="ghost"
               size="icon"
-              className="cursor-pointer btn-reset"
+              className="btn-reset"
             >
               {isMuted || volume === 0 ? (
                 <VolumeOff
@@ -278,7 +272,7 @@ export function Dock() {
           <div className="relative flex-center h-full w-full flex-col text-white">
             <Drawer.Close
               asChild
-              className="absolute top-4 left-4 app-region-no-drag cursor-pointer"
+              className="absolute top-4 left-4 app-region-no-drag"
             >
               <Button
                 variant="ghost"

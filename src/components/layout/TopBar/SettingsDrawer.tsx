@@ -24,7 +24,7 @@ export function SettingsDrawer() {
       <Drawer.Trigger asChild>
         <Button
           size="icon"
-          className={`btn-reset app-region-no-drag animate-[spin_2s_linear_infinite] ${isPlaying ? "animate-running" : "animate-paused"} hover:animate-paused`}
+          className={`btn-reset app-region-no-drag animate-[spin_3s_linear_infinite] ${isPlaying ? "animate-running" : "animate-paused"} hover:animate-paused`}
         >
           {profile ? (
             <div className="flex-center gap-2 cursor-pointer">

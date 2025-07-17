@@ -42,7 +42,7 @@
     "Noto Sans SC", Arial, Helvetica, system-ui, -apple-system, sans-serif;
 
   /* Light Theme Colors */
-  --background: 0 0 100%;
+  --background: 0 0 98%;
   --foreground: 0 0% 20%;
   --card: 260 50% 98%; /* 浅紫色 - card */
   --card-foreground: 0 0% 20%;
