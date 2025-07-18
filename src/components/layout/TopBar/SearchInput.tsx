@@ -1,20 +1,30 @@
 import { Input } from "@/components/ui/input";
-import { useSearchResultStore } from "@/store/searchResult";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export function SearchInput() {
-  const [keyword, setKeyword] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const { setKeyword: setGlobalKeyword, setNeteaseResults } =
-    useSearchResultStore();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [keyword, setKeyword] = useState(searchParams.get("q") || "");
+
+  // URL参数变化,更新输入框的值
+  useEffect(() => {
+    setKeyword(searchParams.get("q") || "");
+  }, [searchParams]);
 
   const handleSearch = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       const trimmedKeyword = keyword.trim();
-      setGlobalKeyword(trimmedKeyword);
-      setNeteaseResults(null);
+      if (trimmedKeyword) {
+        navigate(`/search?q=${trimmedKeyword}`);
+      } else {
+        navigate("/");
+      }
+      inputRef.current?.blur();
     }
     if (e.key === "Escape") {
+      setKeyword("");
       inputRef.current?.blur();
     }
   };

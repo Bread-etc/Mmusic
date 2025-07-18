@@ -1,13 +1,13 @@
 import "./App.css";
 import { useEffect, useState } from "react";
 import { TopBar } from "./components/layout/TopBar";
-import { MainContent } from "./components/layout/MainContent";
 import { Dock } from "./components/layout/Dock";
 import { Toaster } from "sonner";
 import { GlobalLoading } from "./components/common/GlobalLoading";
 import { AudioPlayer } from "./components/common/AudioPlayer";
 import { ThemeProvider } from "next-themes";
 import { CloseConfirmDialog } from "./components/common/CloseConfirmDialog";
+import { Outlet } from "react-router-dom";
 
 // 为 next-themes 提供自定义的存储 provider
 const electronStoreProvider = {
@@ -19,7 +19,7 @@ const electronStoreProvider = {
   },
 };
 
-function App() {
+export function App() {
   const [isCloseDialogVisible, setCloseDialogVisible] = useState(false);
 
   useEffect(() => {
@@ -53,15 +53,11 @@ function App() {
     >
       <div className="h-screen bg-background text-foreground app flex flex-col">
         <TopBar />
-        <MainContent />
+        <Outlet />
         <Dock />
-        {/* 提示 Toast */}
         <Toaster position="top-right" richColors duration={2000} />
-        {/* 全局加载 Loading */}
         <GlobalLoading />
-        {/* 播放器 AudioPlayer */}
         <AudioPlayer />
-        {/* 自定义关闭确认对话框 */}
         <CloseConfirmDialog
           isOpen={isCloseDialogVisible}
           onClose={() => setCloseDialogVisible(false)}
