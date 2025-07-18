@@ -18,6 +18,10 @@
 - [x] `SongCard`下playerIcon动画，hover动画
 - [ ] `Sonner/Toast`样式
 - [x] 深浅主题下主题色`primary`
-- [ ] 加入路由 -> 更多其他功能
+- [x] 加入路由 -> 更多其他功能
 - [ ] 同一歌单歌曲`focus`动感
 - [ ] 页面切换动效
+
+## Bug fix
+
+-[ ] `SettingDrawer`下过快点击切换主题`Drawer`回收问题
