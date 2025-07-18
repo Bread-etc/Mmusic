@@ -3,7 +3,7 @@ import { createHashRouter, redirect } from "react-router-dom";
 import { App } from "./App";
 
 import { DiscoverPage } from "./pages/DiscoverPage";
-import { NotFoundPage } from "./pages/NotFoundPage";
+import { NotFoundPage } from "./pages/ErrorPage";
 import { SeachPage } from "./pages/SearchPage";
 import { searchNetease } from "./lib/music/neteaseService";
 
