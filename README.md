@@ -1,5 +1,7 @@
 # Mmusic🎵
 
+一款基于Electron + Vite + React的音乐播放软件,仅做学习用途📦.
+
 ## Core Function
 
 - [x] 在线音乐源搜索: 网易云
@@ -24,4 +26,4 @@
 
 ## Bug fix
 
--[ ] `SettingDrawer`下过快点击切换主题`Drawer`回收问题
+- [ ] `SettingDrawer`下过快点击切换主题`Drawer`回收问题
