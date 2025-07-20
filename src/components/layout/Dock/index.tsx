@@ -94,7 +94,7 @@ export function Dock() {
     <Drawer.Root open={isDrawerOpen} onOpenChange={handleOpenChange}>
       <div
         className={cn(
-          "flex-between app-region-no-drag absolute bottom-5 left-1/2 -translate-x-1/2 w-[95%] px-4 py-2 rounded-2xl shadow-lg backdrop-blur-sm bg-card/20 transition-shadow duration-300",
+          "flex-between app-region-no-drag px-4 py-2 rounded-2xl shadow-lg backdrop-blur-sm bg-card/20 transition-shadow duration-300",
           { "shadow-lg": isShadowVisible }
         )}
       >

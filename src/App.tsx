@@ -7,7 +7,8 @@ import { GlobalLoading } from "./components/common/GlobalLoading";
 import { AudioPlayer } from "./components/common/AudioPlayer";
 import { ThemeProvider } from "next-themes";
 import { CloseConfirmDialog } from "./components/common/CloseConfirmDialog";
-import { Outlet } from "react-router-dom";
+import { MainContent } from "./components/layout/MainContent";
+import { Library } from "./components/layout/MainContent/Library";
 
 // 为 next-themes 提供自定义的存储 provider
 const electronStoreProvider = {
@@ -52,9 +53,16 @@ export function App() {
       storageProvider={electronStoreProvider}
     >
       <div className="h-screen bg-background text-foreground app flex flex-col">
-        <TopBar />
-        <Outlet />
-        <Dock />
+        <header>
+          <TopBar />
+        </header>
+        <main className="flex-1 flex px-4 py-2 overflow-hidden gap-4">
+          <Library />
+          <MainContent />
+        </main>
+        <footer className="px-4 py-2">
+          <Dock />
+        </footer>
         <Toaster position="top-right" richColors duration={2000} />
         <GlobalLoading />
         <AudioPlayer />

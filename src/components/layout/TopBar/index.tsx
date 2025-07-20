@@ -13,7 +13,7 @@ export function TopBar() {
   };
 
   return (
-    <header className="flex items-center h-16 px-4 border-b border-border app-region-drag shrink-0">
+    <div className="flex items-center h-16 px-4 border-b border-border app-region-drag shrink-0">
       {/* Left Section */}
       <div className="flex items-center w-1/5">
         <SettingsDrawer />
@@ -45,6 +45,6 @@ export function TopBar() {
           <span className="sr-only">Close</span>
         </Button>
       </div>
-    </header>
+    </div>
   );
 }

@@ -50,7 +50,7 @@ export function SeachPage() {
   const rowRenderer = ({ index, key, style }: ListRowProps) => {
     const song = songs[index];
     return (
-      <div key={key} style={style} className="app-region-no-drag px-2">
+      <div key={key} style={style} className="app-region-no-drag">
         <SongCard index={index} song={song} />
       </div>
     );
@@ -90,5 +90,5 @@ export function SeachPage() {
     );
   };
 
-  return <main className="flex-grow w-full min-h-0">{renderContent()}</main>;
+  return <div className="h-full min-h-0">{renderContent()}</div>;
 }
