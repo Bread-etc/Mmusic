@@ -4,6 +4,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Heart,
+  Music2,
   Pause,
   Play,
   Repeat,
@@ -78,37 +79,46 @@ export function Dock() {
     }
   };
 
-  if (!currentSong) {
-    return null;
-  }
-
   const handleProgressChange = (value: number[]) => {
     setCurrentTime(value[0]);
   };
   const handleVolumeChange = (value: number[]) => {
     setVolume(value[0]);
   };
-  const songIsLiked = isLiked(currentSong.id);
 
   return (
     <Drawer.Root open={isDrawerOpen} onOpenChange={handleOpenChange}>
       <div
         className={cn(
-          "flex-between app-region-no-drag px-4 py-2 rounded-2xl shadow-lg backdrop-blur-sm bg-card/20 transition-shadow duration-300",
+          "flex-between app-region-no-drag px-4 py-2 rounded-2xl shadow-material backdrop-blur-sm bg-card/20 transition-shadow duration-300",
           { "shadow-lg": isShadowVisible }
         )}
       >
         {/* 左侧：歌曲信息和抽屉触发器 */}
-        <Drawer.Trigger asChild>
+        <Drawer.Trigger
+          asChild={!!currentSong}
+          className={`${!currentSong ? "border-none bg-transparent" : ""}`}
+        >
           <div className="w-64 flex items-center gap-4 cursor-pointer group">
-            <img
-              src={currentSong.cover}
-              alt={currentSong.title}
-              className="w-12 h-12 rounded-md object-cover"
-            />
+            {currentSong ? (
+              <img
+                src={currentSong.cover}
+                alt={currentSong.title}
+                className="w-12 h-12 rounded-md object-cover"
+              />
+            ) : (
+              <div className="w-12 h-12 rounded-md bg-muted flex-center">
+                <Music2 size={24} className="text-muted-foreground" />
+              </div>
+            )}
+
             <div className="flex flex-col min-w-0">
-              <p className="text-title-small truncate">{currentSong.title}</p>
-              <p className="text-caption truncate">{currentSong.artist}</p>
+              <p className="text-title-small truncate">
+                {currentSong ? currentSong.title : "暂无歌曲"}
+              </p>
+              <p className="text-caption truncate">
+                {currentSong ? currentSong.artist : "请选择歌曲"}
+              </p>
             </div>
           </div>
         </Drawer.Trigger>
@@ -124,6 +134,7 @@ export function Dock() {
               size="icon"
               variant="ghost"
               className="btn-reset"
+              disabled={!currentSong}
             >
               <ChevronsLeft
                 className="hover:text-primary transition-colors duration-200"
@@ -139,6 +150,7 @@ export function Dock() {
               size="icon"
               variant="ghost"
               className="btn-reset"
+              disabled={!currentSong}
             >
               {isPlaying ? (
                 <Pause className="fill-current text-primary" size={24} />
@@ -154,6 +166,7 @@ export function Dock() {
               size="icon"
               variant="ghost"
               className="btn-reset"
+              disabled={!currentSong}
             >
               <ChevronsRight
                 className="hover:text-primary transition-colors duration-200"
@@ -164,7 +177,7 @@ export function Dock() {
           </div>
           <div className="w-full flex items-center gap-2">
             <span className="text-xs w-8 text-center tracking-wide">
-              {formatTime(currentTime)}
+              {currentSong ? formatTime(currentTime) : "00:00"}
             </span>
             <Slider
               value={[currentTime]}
@@ -172,9 +185,10 @@ export function Dock() {
               step={1}
               onValueChange={handleProgressChange}
               className="flex-grow"
+              disabled={!currentSong}
             />
             <span className="text-xs w-8 text-center tracking-wide">
-              {formatTime(duration)}
+              {currentSong ? formatTime(duration) : "00:00"}
             </span>
           </div>
         </div>
@@ -188,11 +202,12 @@ export function Dock() {
             }}
             size="icon"
             variant="ghost"
-            className={`btn-reset ${songIsLiked ? "text-red-500" : ""}`}
+            className={`btn-reset ${currentSong && isLiked(currentSong.id) ? "text-red-500" : ""}`}
+            disabled={!currentSong}
           >
             <Heart
               size={20}
-              className={`${songIsLiked ? "fill-current" : ""} hover:fill-current`}
+              className={`${currentSong && isLiked(currentSong.id) ? "fill-current" : ""} hover:fill-current`}
             />
           </Button>
 
@@ -205,6 +220,7 @@ export function Dock() {
             size="icon"
             variant="ghost"
             className="btn-reset"
+            disabled={!currentSong}
           >
             <PlaybackModeIcon mode={playbackMode} />
           </Button>
@@ -223,6 +239,7 @@ export function Dock() {
               variant="ghost"
               size="icon"
               className="btn-reset"
+              disabled={!currentSong}
             >
               {isMuted || volume === 0 ? (
                 <VolumeOff
@@ -238,7 +255,7 @@ export function Dock() {
             </Button>
 
             {/* 悬浮显示的音量条 */}
-            {isVolumeSliderVisible && (
+            {isVolumeSliderVisible && currentSong && (
               <div className="absolute bottom-full left-1/2 -translate-x-1/2">
                 <div className="bg-foreground/10 backdrop-blur-sm p-4 rounded-md shadow-lg flex-center h-32">
                   <Slider
@@ -257,47 +274,49 @@ export function Dock() {
       </div>
 
       {/* 抽屉内容：全屏播放页 */}
-      <Drawer.Portal>
-        <Drawer.Overlay className="fixed inset-0 z-50 bg-background rounded-[10px]" />
-        <Drawer.Content className="fixed inset-0 z-50 flex flex-col h-full outline-none">
-          <div className="absolute inset-0 -z-10 rounded-[10px] overflow-hidden">
-            <img
-              src={currentSong.cover}
-              className="w-full h-full object-cover blur-3xl scale-120"
-              alt="background"
-            />
-            <div className="absolute inset-0 w-full h-full bg-black/20" />
-          </div>
-
-          <div className="relative flex-center h-full w-full flex-col text-white">
-            <Drawer.Close
-              asChild
-              className="absolute top-4 left-4 app-region-no-drag"
-            >
-              <Button
-                variant="ghost"
-                size="icon"
-                className="btn-reset text-primary-foreground hover:text-primary transition-colors duration-200"
-              >
-                <ChevronDown size={24} />
-              </Button>
-            </Drawer.Close>
-            <img
-              src={currentSong.cover}
-              alt={currentSong.title}
-              className="w-70 h-70 rounded-lg object-cover shadow-2xl"
-            />
-            <div className="mt-4 text-center">
-              <Drawer.Title className="font-noto font-extrabold tracking-wide">
-                {currentSong.title}
-              </Drawer.Title>
-              <Drawer.Description className="mt-2 opacity-80">
-                {currentSong.artist}
-              </Drawer.Description>
+      {currentSong && (
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 z-50 bg-background rounded-[10px]" />
+          <Drawer.Content className="fixed inset-0 z-50 flex flex-col h-full outline-none">
+            <div className="absolute inset-0 -z-10 rounded-[10px] overflow-hidden">
+              <img
+                src={currentSong.cover}
+                className="w-full h-full object-cover blur-3xl scale-120"
+                alt="background"
+              />
+              <div className="absolute inset-0 w-full h-full bg-black/20" />
             </div>
-          </div>
-        </Drawer.Content>
-      </Drawer.Portal>
+
+            <div className="relative flex-center h-full w-full flex-col text-white">
+              <Drawer.Close
+                asChild
+                className="absolute top-4 left-4 app-region-no-drag"
+              >
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="btn-reset text-primary-foreground hover:text-primary transition-colors duration-200"
+                >
+                  <ChevronDown size={24} />
+                </Button>
+              </Drawer.Close>
+              <img
+                src={currentSong.cover}
+                alt={currentSong.title}
+                className="w-70 h-70 rounded-lg object-cover shadow-2xl"
+              />
+              <div className="mt-4 text-center">
+                <Drawer.Title className="font-noto font-extrabold tracking-wide">
+                  {currentSong.title}
+                </Drawer.Title>
+                <Drawer.Description className="mt-2 opacity-80">
+                  {currentSong.artist}
+                </Drawer.Description>
+              </div>
+            </div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      )}
     </Drawer.Root>
   );
 }

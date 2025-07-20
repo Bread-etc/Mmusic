@@ -52,15 +52,18 @@ export function App() {
       // @ts-ignore
       storageProvider={electronStoreProvider}
     >
-      <div className="h-screen bg-background text-foreground app flex flex-col">
+      <div
+        className="h-screen app flex flex-col
+        bg-background text-foreground"
+      >
         <header>
           <TopBar />
         </header>
-        <main className="flex-1 flex px-4 py-2 overflow-hidden gap-4">
+        <main className="flex flex-1 px-4 pb-4 gap-4">
           <Library />
           <MainContent />
         </main>
-        <footer className="px-4 py-2">
+        <footer className="px-4 pb-4">
           <Dock />
         </footer>
         <Toaster position="top-right" richColors duration={2000} />

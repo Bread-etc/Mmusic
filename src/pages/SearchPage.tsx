@@ -76,7 +76,7 @@ export function SeachPage() {
             width={width}
             height={height}
             rowCount={songs.length}
-            rowHeight={56}
+            rowHeight={60}
             rowRenderer={rowRenderer}
             onRowsRendered={({ stopIndex }) => {
               if (hasMore && stopIndex >= songs.length - 5) {
